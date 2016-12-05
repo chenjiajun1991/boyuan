@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.UserBatteryMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.UserBattery" >
+    <id column="user_id" property="userId" jdbcType="INTEGER" />
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="PubBtyResultMap" type="com.sam.yh.model.PubBattery" >
+    <result column="pub_sn" property="btyPubSn" jdbcType="VARCHAR" />
+    <result column="imei" property="bytImei" jdbcType="VARCHAR" />
+    <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- 查询当天卖出去的电池 -->
+  <resultMap id="BtySaleResultMap" type="com.sam.yh.model.UserBatteryInfo" >
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="buy_date" property="buyDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- web后台查询所有电池详细的销售信息 -->
+  <resultMap id="AllBtySaleResultMap" type="com.sam.yh.model.web.BtySaleInfoModel" >
+    <id column="id" property="btyId" jdbcType="INTEGER" />
+   <result column="imei" property="btyImei" jdbcType="VARCHAR" />
+   <result column="sim_no" property="btySimNo" jdbcType="VARCHAR" />
+    <result column="sn" property="btySn" jdbcType="VARCHAR" />
+    <result column="bty_quantity" property="btyQuantity" jdbcType="VARCHAR" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="user_phone" property="userphone" jdbcType="VARCHAR" />
+    <result column="reseller_name" property="resellerName" jdbcType="VARCHAR" />
+    <result column="reseller_phone" property="resellerPhone" jdbcType="VARCHAR" />
+    <result column="sale_date" property="saleDate" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    user_id, battery_id, buy_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.sam.yh.model.UserBatteryKey" >
+    select
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId,jdbcType=INTEGER}
+      and u.battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    u.user_id as user_id,
+    u.battery_id as battery_id,
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    u.buy_date as buy_date
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  
+<!-- 查询当天卖出去的电池 -->
+<select id="selectByBuyDate" resultMap="BtySaleResultMap" parameterType="java.util.Map">
+select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where  buy_date &gt;= #{startDate,jdbcType=TIMESTAMP}  and buy_date &lt; #{endDate,jdbcType=TIMESTAMP}
+    order by buy_date
+</select>
+
+<!-- 查询所有电池的详细销售信息 -->
+<select id="selectAllBtySaleInfo" resultMap="AllBtySaleResultMap">
+     select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id
+     order by bu.id
+</select>
+
+<!-- 根据imei号来查询电池的销售信息 -->
+<select id="selectBtySaleInfoByImei" resultMap="AllBtySaleResultMap" parameterType="java.lang.String">
+select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id where imei=#{imei,jdbcType=VARCHAR}) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id
+     order by bu.id
+
+</select>
+
+<!-- 根据手机号来查询电池的销售信息 -->
+<select id="selectBtySaleInfoByPhone" resultMap="AllBtySaleResultMap" parameterType="java.lang.String">
+select
+     bu.id as id,
+     bu.imei as imei, 
+     bu.sim_no as sim_no,
+     bu.sn as sn,
+     bu.bty_quantity as bty_quantity, 
+     u.user_name as user_name, 
+     u.mobile_phone as user_phone, 
+     bu.reseller_name as reseller_name, 
+     bu.reseller_phone as reseller_phone, 
+     bu.sale_date as sale_date
+     from(
+     select 
+     br.id as id, br.imei as imei, br.sim_no as sim_no, br.sn as sn, br.sale_date as sale_date, br.bty_quantity as bty_quantity, 
+     br.reseller_name as reseller_name, br.reseller_phone as reseller_phone, ub.user_id as user_id
+     from (
+     select 
+     b.id as id, b.imei as imei, b.sim_no as sim_no, b.sn as sn, b.sale_date as sale_date,b.bty_quantity as bty_quantity,
+     r.user_name as reseller_name, r.mobile_phone as reseller_phone  
+     from battery b left join user r on b.reseller_id = r.user_id ) br
+     left join user_battery ub on br.id = ub.battery_id ) bu
+     left join user u on bu.user_id = u.user_id where u.mobile_phone = #{mobilePhone,jdbcType=VARCHAR}
+     order by bu.id
+
+</select>
+
+
+  <select id="selectBtysByUserId" resultMap="PubBtyResultMap" parameterType="java.lang.Integer" >
+    select 
+    b.pub_sn as pub_sn,
+    b.imei as imei,
+    b.sim_no as sim_no
+    from user_battery u
+    inner join
+    battery b
+    on u.battery_id = b.id
+    where u.user_id = #{userId}
+  </select>
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user_battery
+    where battery_id = #{batteryId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.sam.yh.model.UserBatteryKey" >
+    delete from user_battery
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+  <delete id="deleteByBtyId" parameterType="java.lang.Integer" >
+    delete from user_battery
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery (user_id, battery_id, buy_date
+      )
+    values (#{userId,jdbcType=INTEGER}, #{batteryId,jdbcType=INTEGER}, #{buyDate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sam.yh.model.UserBattery" >
+    insert into user_battery
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="buyDate != null" >
+        buy_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="buyDate != null" >
+        #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    <set >
+      <if test="buyDate != null" >
+        buy_date = #{buyDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    set buy_date = #{buyDate,jdbcType=TIMESTAMP}
+    where user_id = #{userId,jdbcType=INTEGER}
+      and battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByBtyId" parameterType="com.sam.yh.model.UserBattery" >
+    update user_battery
+    set buy_date = #{buyDate,jdbcType=TIMESTAMP},
+    user_id = #{userId,jdbcType=INTEGER}
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  
+</mapper>
