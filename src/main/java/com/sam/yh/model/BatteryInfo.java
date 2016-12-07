@@ -12,8 +12,14 @@ public class BatteryInfo {
     private String latitude;
 
     private String temperature;
-
-    private String voltage;
+    
+    private String oilPressure;
+    
+    private String engineSpeed;
+    
+    private String speed;
+    
+	private String voltage;
 
     private String status;
 
@@ -60,6 +66,30 @@ public class BatteryInfo {
     public void setTemperature(String temperature) {
         this.temperature = temperature == null ? null : temperature.trim();
     }
+    
+    public String getOilPressure() {
+		return oilPressure;
+	}
+
+	public void setOilPressure(String oilPressure) {
+		this.oilPressure = oilPressure == null ? null : oilPressure.trim();
+	}
+
+	public String getEngineSpeed() {
+		return engineSpeed;
+	}
+
+	public void setEngineSpeed(String engineSpeed) {
+		this.engineSpeed = engineSpeed == null ? null : engineSpeed.trim();
+	}
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed == null ? null : speed.trim();
+	}   
 
     public String getVoltage() {
         return voltage;

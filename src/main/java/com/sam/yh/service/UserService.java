@@ -47,4 +47,16 @@ public interface UserService {
     public void unlockBty(String mobilePhone, String btyImei) throws CrudException;
 
     public String getUserType(String mobilePhone) throws CrudException;
+    
+    @Transactional
+    public void lockEgOne(String mobilePhone, String btyImei)throws CrudException;
+    
+    @Transactional
+    public void unLockEgOne(String mobilePhone, String btyImei)throws CrudException;
+    
+    @Transactional
+    public void lockEgTwo(String mobilePhone, String btyImei)throws CrudException;
+    
+    @Transactional
+    public void unLockEgTwo(String mobilePhone, String btyImei)throws CrudException;  
 }

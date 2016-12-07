@@ -12,7 +12,13 @@ public class BatteryInfoNst {
     private String latitude;
 
     private String temperature;
-
+    
+    private String oilPressure;
+    
+    private String engineSpeed;
+    
+    private String speed;
+    
     private String voltage;
 
     private String status;
@@ -63,7 +69,33 @@ public class BatteryInfoNst {
         this.temperature = temperature == null ? null : temperature.trim();
     }
 
-    public String getVoltage() {
+    
+    
+    public String getOilPressure() {
+		return oilPressure;
+	}
+
+	public void setOilPressure(String oilPressure) {
+		this.oilPressure = oilPressure;
+	}
+
+	public String getEngineSpeed() {
+		return engineSpeed;
+	}
+
+	public void setEngineSpeed(String engineSpeed) {
+		this.engineSpeed = engineSpeed;
+	}
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	public String getVoltage() {
         return voltage;
     }
 

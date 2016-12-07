@@ -7,13 +7,18 @@
     <result column="longitude" property="longitude" jdbcType="VARCHAR" />
     <result column="latitude" property="latitude" jdbcType="VARCHAR" />
     <result column="temperature" property="temperature" jdbcType="VARCHAR" />
+    
+    <result column="oil_pressure" property="oilPressure" jdbcType="VARCHAR" />
+    <result column="engine_speed" property="engineSpeed" jdbcType="VARCHAR" />
+    <result column="speed" property="speed" jdbcType="VARCHAR" />
+       
     <result column="voltage" property="voltage" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="CHAR" />
     <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
     <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, battery_id, longitude, latitude, temperature, voltage, status, receive_date, 
+    id, battery_id, longitude, latitude, temperature, oil_pressure, engine_speed, speed, voltage, status, receive_date, 
     sample_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -74,11 +79,12 @@
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.BatteryInfo" >
     insert into battery_info (id, battery_id, longitude, 
-      latitude, temperature, voltage, 
+      latitude, temperature, oil_pressure, engine_speed, speed, voltage, 
       status, receive_date, sample_date
       )
     values (#{id,jdbcType=BIGINT}, #{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
-      #{latitude,jdbcType=VARCHAR}, #{temperature,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, 
+      #{latitude,jdbcType=VARCHAR}, #{temperature,jdbcType=VARCHAR}, #{oilPressure,jdbcType=VARCHAR},#{engineSpeed,jdbcType=VARCHAR},
+      #{speed,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, 
       #{status,jdbcType=CHAR}, #{receiveDate,jdbcType=TIMESTAMP}, #{sampleDate,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -99,6 +105,15 @@
       </if>
       <if test="temperature != null" >
         temperature,
+      </if>
+       <if test="oil_pressure != null" >
+        oil_pressure,
+      </if>
+       <if test="engine_speed != null" >
+        engine_speed,
+      </if>
+       <if test="speed != null" >
+        speed,
       </if>
       <if test="voltage != null" >
         voltage,
@@ -129,6 +144,15 @@
       <if test="temperature != null" >
         #{temperature,jdbcType=VARCHAR},
       </if>
+      <if test="oilPressure != null" >
+        #{oilPressure,jdbcType=VARCHAR},
+      </if>
+      <if test="engineSpeed != null" >
+        #{engineSpeed,jdbcType=VARCHAR},
+      </if>
+      <if test="speed != null" >
+        #{speed,jdbcType=VARCHAR},
+      </if>     
       <if test="voltage != null" >
         #{voltage,jdbcType=VARCHAR},
       </if>

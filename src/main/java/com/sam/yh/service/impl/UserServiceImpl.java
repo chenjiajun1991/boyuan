@@ -1,15 +1,20 @@
 package com.sam.yh.service.impl;
 
+import io.netty.channel.Channel;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.google.common.collect.Sets;
@@ -24,6 +29,7 @@ import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
+import com.sam.yh.dao.EngineMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserCodeMapper;
@@ -35,6 +41,7 @@ import com.sam.yh.enums.UserType;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.model.Enginer;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -47,9 +54,12 @@ import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserBatteryService;
 import com.sam.yh.service.UserCodeService;
 import com.sam.yh.service.UserService;
+import com.sam.yh.service.socket.SamBtyDataHandler;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Resource
     private UserCodeService userCodeService;
@@ -83,6 +93,9 @@ public class UserServiceImpl implements UserService {
     
     @Resource
     private UserCodeMapper userCodeMapper;
+    
+    @Resource
+    private EngineMapper engineMapper;
 
     @Resource
     private String adminPhones;
@@ -476,4 +489,161 @@ public class UserServiceImpl implements UserService {
         }
         
     }
+
+	@Override
+	public void lockEgOne(String mobilePhone, String btyImei)
+			throws CrudException {
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+	        boolean hasConn = sendLockReq(battery.getImei(), "lockone");
+	        
+	        if(hasConn){
+	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+	        	if(enginer == null){
+	        		Enginer enginer2 = new Enginer();
+		        	enginer2.setBatteryId(battery.getId());
+		        	enginer2.setLockOne(1);
+		        	enginer2.setLockOneDate(new Date());
+		        	engineMapper.insert(enginer2);
+		        	
+		        }else{
+		        	enginer.setLockOne(1);
+		        	enginer.setLockOneDate(new Date());
+		        	engineMapper.updateByBtyId(enginer);	        	
+		        }
+	          }else{
+	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+	          }
+	}
+
+	@Override
+	public void lockEgTwo(String mobilePhone, String btyImei)
+			throws CrudException {
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+	        boolean hasConn = sendLockReq(battery.getImei(), "locktwo");
+	        
+	        if(hasConn){
+	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+	        	if(enginer == null){
+	        		Enginer enginer2 = new Enginer();
+		        	enginer2.setBatteryId(battery.getId());
+		        	enginer2.setLockTwo(1);
+		        	enginer2.setLockTwoDate(new Date());
+		        	engineMapper.insert(enginer2);
+		        	
+		        }else{
+		        	enginer.setLockTwo(1);
+		        	enginer.setLockTwoDate(new Date());
+		        	engineMapper.updateByBtyId(enginer);	        	
+		        }
+	          }else{
+	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+	          }
+	       
+	}
+
+	@Override
+	public void unLockEgOne(String mobilePhone, String btyImei)
+			throws CrudException {
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+	        boolean hasConn = sendLockReq(battery.getImei(), "unlockone");
+	        
+	        if(hasConn){
+	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+	        	if(enginer == null){
+	        		Enginer enginer2 = new Enginer();
+		        	enginer2.setBatteryId(battery.getId());
+		        	enginer2.setLockOne(0);
+		        	enginer2.setLockOneDate(new Date());
+		        	engineMapper.insert(enginer2);
+		        	
+		        }else{
+		        	enginer.setLockOne(0);
+		        	enginer.setLockOneDate(new Date());
+		        	engineMapper.updateByBtyId(enginer);	        	
+		        }
+	          }else{
+	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+	          }
+	       
+	}
+
+	@Override
+	public void unLockEgTwo(String mobilePhone, String btyImei)
+			throws CrudException {
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+	        boolean hasConn = sendLockReq(battery.getImei(), "unlocktwo");
+	        
+	        if(hasConn){
+	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+	        	if(enginer == null){
+	        		Enginer enginer2 = new Enginer();
+		        	enginer2.setBatteryId(battery.getId());
+		        	enginer2.setLockTwo(0);
+		        	enginer2.setLockTwoDate(new Date());
+		        	engineMapper.insert(enginer2);
+		        	
+		        }else{
+		        	enginer.setLockTwo(0);
+		        	enginer.setLockTwoDate(new Date());
+		        	engineMapper.updateByBtyId(enginer);	        	
+		        }
+	          }else{
+	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+	          }
+
+	}
+	
+	private boolean sendLockReq(String btyImei,String message) {
+		Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+		if (battery == null) {
+			logger.error("电池不存在, " + btyImei);
+			return false;
+		}
+		boolean hasConn = false;
+
+		ConcurrentHashMap<String, Channel> channelMap = SamBtyDataHandler.channelMap;
+		Channel channel = channelMap.get(battery.getImei());
+		if (channel != null) {
+			channel.writeAndFlush(message + battery.getImei() + "\n");
+			hasConn = true;
+		}
+
+		if (!hasConn) {
+			logger.error("未获取到长连接, " + btyImei);
+		}
+		return hasConn;
+	}
+	
 }

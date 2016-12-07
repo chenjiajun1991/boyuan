@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sam.by</groupId>
 	<artifactId>boyuan</artifactId>
-	<version>0.7.6-SNAPSHOT</version>
+	<version>0.7.9-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
 		<pluginManagement>

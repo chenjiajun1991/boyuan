@@ -12,7 +12,11 @@ public class BatteryInfoReq implements Serializable {
     private String latitude;
     private String temperature;
     private String voltage;
-
+    
+    private String pressure;
+    private String motorspeed;
+    private String speed;
+    
     public String getImei() {
         return imei;
     }
@@ -69,10 +73,41 @@ public class BatteryInfoReq implements Serializable {
         this.voltage = voltage;
     }
 
-    @Override
-    public String toString() {
-        return "BatteryInfoReq [imei=" + imei + ", imsi=" + imsi + ", phonenumber=" + phonenumber + ", longitude=" + longitude + ", latitude=" + latitude
-                + ", temperature=" + temperature + ", voltage=" + voltage + "]";
-    }
+	public String getPressure() {
+		return pressure;
+	}
+
+	public void setPressure(String pressure) {
+		this.pressure = pressure;
+	}
+
+
+
+	public String getMotorspeed() {
+		return motorspeed;
+	}
+
+	public void setMotorspeed(String motorspeed) {
+		this.motorspeed = motorspeed;
+	}
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	@Override
+	public String toString() {
+		return "BatteryInfoReq [imei=" + imei + ", imsi=" + imsi
+				+ ", phonenumber=" + phonenumber + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", temperature=" + temperature
+				+ ", voltage=" + voltage + ", pressure=" + pressure
+				+ ", motorspeed=" + motorspeed + ", speed=" + speed + "]";
+	}
+    
+
 
 }

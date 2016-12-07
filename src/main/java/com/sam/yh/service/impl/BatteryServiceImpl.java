@@ -55,6 +55,7 @@ public class BatteryServiceImpl implements BatteryService {
 
     @Resource
     private UserMapper userMapper;
+    
 
     @Resource
     private UserCodeService userCodeService;
@@ -112,7 +113,15 @@ public class BatteryServiceImpl implements BatteryService {
         info.setBatteryId(battery.getId());
         info.setLongitude(batteryInfoReqVo.getLongitude());
         info.setLatitude(batteryInfoReqVo.getLatitude());
-        info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
+//        info.setTemperature(convertAdcToTemp(batteryInfoReqVo.getTemperature()));
+        info.setTemperature(batteryInfoReqVo.getTemperature());
+        info.setOilPressure(batteryInfoReqVo.getPressure());
+        info.setEngineSpeed(batteryInfoReqVo.getMotorspeed());
+        info.setSpeed(batteryInfoReqVo.getSpeed());
+        
+        
+        
+        
         String voltage = convertAdcToVo(batteryInfoReqVo.getVoltage());
         info.setVoltage(voltage);
         
@@ -158,8 +167,7 @@ public class BatteryServiceImpl implements BatteryService {
         	sendViolentDestroyService(servicePhone, battery);
         }
         
-        
-   
+                 
         // TODO
         // info.setSampleDate(batteryInfoReqVo.getSampleDate());
         info.setSampleDate(new Date());
@@ -229,10 +237,12 @@ public class BatteryServiceImpl implements BatteryService {
             batteryInfoNst = new BatteryInfoNst();
             batteryInfoNst.setBatteryId(batteryId);
             copyProps(btyInfo, batteryInfoNst);
-            batteryInfoNstMapper.insertSelective(batteryInfoNst);
+//            batteryInfoNstMapper.insertSelective(batteryInfoNst);
+            batteryInfoNstMapper.insert(batteryInfoNst);
         } else {
             copyProps(btyInfo, batteryInfoNst);
-            batteryInfoNstMapper.updateByPrimaryKeySelective(batteryInfoNst);
+//            batteryInfoNstMapper.updateByPrimaryKeySelective(batteryInfoNst);
+            batteryInfoNstMapper.updateByPrimaryKey(batteryInfoNst);
         }
 
         return batteryInfoNst;
@@ -249,6 +259,9 @@ public class BatteryServiceImpl implements BatteryService {
             batteryInfoNst.setLatitude(btyInfo.getLatitude());
         }
         batteryInfoNst.setTemperature(btyInfo.getTemperature());
+        batteryInfoNst.setOilPressure(btyInfo.getOilPressure());
+        batteryInfoNst.setEngineSpeed(btyInfo.getEngineSpeed());
+        batteryInfoNst.setSpeed(btyInfo.getSpeed());
         batteryInfoNst.setVoltage(btyInfo.getVoltage());
         batteryInfoNst.setStatus(btyInfo.getStatus());
         batteryInfoNst.setReceiveDate(new Date());

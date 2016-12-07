@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.EngineMapper" >
+<resultMap id="BaseResultMap" type="com.sam.yh.model.Enginer" >
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="lock_one" property="lockOne" jdbcType="INTEGER" />
+    <result column="lock_two" property="lockTwo" jdbcType="INTEGER" /> 
+    <result column="lock_one_date" property="lockOneDate" jdbcType="TIMESTAMP" />
+    <result column="lock_two_date" property="lockTwoDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <sql id="Base_Column_List" >
+    battery_id, lock_one, lock_two, lock_one_date, lock_two_date
+  </sql>
+  
+
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from engine
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+   
+  
+  <delete id="deleteBtyById" parameterType="java.lang.Integer" >
+    delete from engine
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.sam.yh.model.Enginer">
+    insert into engine (battery_id, lock_one, lock_two, lock_one_date, lock_two_date)
+      values ( #{batteryId,jdbcType=INTEGER}, #{lockOne,jdbcType=INTEGER}, #{lockTwo,jdbcType=INTEGER},
+       #{lockOneDate,jdbcType=TIMESTAMP}, #{lockTwoDate,jdbcType=TIMESTAMP})
+  </insert>
+
+
+   <update id="updateByBtyId" parameterType="com.sam.yh.model.Enginer">
+    update engine
+    set lock_one = #{lockOne,jdbcType=INTEGER},
+      lock_two = #{lockTwo,jdbcType=INTEGER},
+      lock_one_date = #{lockOneDate,jdbcType=TIMESTAMP},
+      lock_two_date = #{lockTwoDate,jdbcType=TIMESTAMP}
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+
+</mapper>

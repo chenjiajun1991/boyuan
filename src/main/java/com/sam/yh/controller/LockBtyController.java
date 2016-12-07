@@ -38,7 +38,6 @@ public class LockBtyController {
 
         try {
             validateBtyLockArgs(req);
-
             userService.lockBty(req.getUserPhone().trim(), req.getBtyImei().trim());
 
             return ResponseUtils.getNormalResp(StringUtils.EMPTY);
