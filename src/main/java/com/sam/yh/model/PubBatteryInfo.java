@@ -18,6 +18,20 @@ public class PubBatteryInfo {
     private String latitude;
 
     private String temperature;
+    
+    private String oilPressure;
+    
+    private String engineSpeed;
+    
+    private String speed;
+    
+    private String drumFlowSpeed;
+    
+    private String rethresherSpeed;
+    
+    private String engineStatus;
+    
+    private String motorPower;
 
     private String voltage;
 
@@ -37,8 +51,15 @@ public class PubBatteryInfo {
         this.longitude = batteryInfo.getLongitude();
         this.latitude = batteryInfo.getLatitude();
         this.temperature = batteryInfo.getTemperature();
+        this.oilPressure = batteryInfo.getOilPressure();
+        this.engineSpeed = batteryInfo.getEngineSpeed();
+        this.speed = batteryInfo.getSpeed();
+        this.drumFlowSpeed = batteryInfo.getDrumFlowSpeed();
+        this.rethresherSpeed = batteryInfo.getRethresherSpeed();
         this.voltage = batteryInfo.getVoltage();
         this.status = batteryInfo.getStatus();
+        this.engineStatus = batteryInfo.getEngineStatus();
+        this.motorPower = batteryInfo.getMotorPower();
         this.receiveDate = batteryInfo.getReceiveDate();
         this.sampleDate = batteryInfo.getSampleDate();
     }
@@ -106,8 +127,49 @@ public class PubBatteryInfo {
     public void setTemperature(String temperature) {
         this.temperature = temperature == null ? null : temperature.trim();
     }
+    
 
-    public String getVoltage() {
+    public String getOilPressure() {
+		return oilPressure;
+	}
+
+	public void setOilPressure(String oilPressure) {
+		this.oilPressure = oilPressure;
+	}
+
+	public String getEngineSpeed() {
+		return engineSpeed;
+	}
+
+	public void setEngineSpeed(String engineSpeed) {
+		this.engineSpeed = engineSpeed;
+	}
+
+	public String getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(String speed) {
+		this.speed = speed;
+	}
+
+	public String getDrumFlowSpeed() {
+		return drumFlowSpeed;
+	}
+
+	public void setDrumFlowSpeed(String drumFlowSpeed) {
+		this.drumFlowSpeed = drumFlowSpeed;
+	}
+
+	public String getRethresherSpeed() {
+		return rethresherSpeed;
+	}
+
+	public void setRethresherSpeed(String rethresherSpeed) {
+		this.rethresherSpeed = rethresherSpeed;
+	}
+
+	public String getVoltage() {
         return voltage;
     }
 
@@ -123,7 +185,23 @@ public class PubBatteryInfo {
         this.status = status;
     }
 
-    public Date getReceiveDate() {
+    public String getEngineStatus() {
+		return engineStatus;
+	}
+
+	public void setEngineStatus(String engineStatus) {
+		this.engineStatus = engineStatus;
+	}
+
+	public String getMotorPower() {
+		return motorPower;
+	}
+
+	public void setMotorPower(String motorPower) {
+		this.motorPower = motorPower;
+	}
+
+	public Date getReceiveDate() {
         return receiveDate;
     }
 

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.QuestionTypeUtils;
 import com.sam.yh.common.RandomCodeUtils;
 import com.sam.yh.common.SamConstants;
 import com.sam.yh.common.msg.DahantSmsService;
@@ -335,6 +336,85 @@ public class UserCodeServiceImpl implements UserCodeService {
 		 }
 		
 		return send;
+	}
+
+	@Override
+	public boolean sendErrorMsg(String mobilePhone, String message) throws CrudException {
+		boolean send=false;	
+		int type = UserCodeType.BTY_ERROR_REMIND.getType();
+		UserCode userCode = fetchByUserName(mobilePhone, type);
+		
+		  Date now = new Date();
+		  
+		  if (userCode == null) {
+	            userCode = new UserCode();
+	            userCode.setMobilePhone(mobilePhone);
+	            userCode.setCodeType(type);
+	            userCode.setDynamicCode(message);
+	            userCode.setSendTimes(1);
+	            userCode.setStatus(true);
+	            userCode.setSendDate(now);
+	            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+	            userCodeMapper.insert(userCode);
+	            send = true;
+	        }
+		  
+		  int sendTimes = DateUtils.isSameDay(now, userCode.getSendDate()) ? (userCode.getSendTimes()+1) : 1;
+		  
+		  if(sendTimes <= 5){
+//     		 userCode.setSendTimes(sendTimes);
+     		//每天发送一次
+     		 userCode.setSendTimes(sendTimes);
+              userCode.setSendDate(now);
+              userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+              userCodeMapper.updateByPrimaryKey(userCode);
+              send = true;
+     	}
+		  
+		  if(send){
+			  defaultUmsSmsService.sendErrorMessage(mobilePhone, message);
+			  
+		  }
+		  
+		
+		return send;
+	}
+
+	@Override
+	public boolean sendSosMsg(String mobilePhone) throws CrudException {
+		
+	
+		int type = UserCodeType.BTY_SOS.getType();
+		
+		UserCode userCode = fetchByUserName(mobilePhone, type);
+		
+		Date now = new Date();
+		
+		if (userCode == null) {
+            userCode = new UserCode();
+            userCode.setMobilePhone(mobilePhone);
+            userCode.setCodeType(type);
+            userCode.setDynamicCode(UserCodeType.BTY_SOS.getDesc());
+            userCode.setSendTimes(1);
+            userCode.setStatus(true);
+            userCode.setSendDate(now);
+            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+
+            userCodeMapper.insert(userCode);
+          
+        }else{
+        	userCode.setSendTimes(userCode.getSendTimes()+1);
+            userCode.setStatus(true);
+            userCode.setSendDate(now);
+            userCode.setExpiryDate(DateUtils.addMinutes(now, SamConstants.EXPIRY_TIME));
+            
+            userCodeMapper.updateByPrimaryKey(userCode);
+        }
+		
+		
+		return defaultUmsSmsService.sendSosMessage(mobilePhone);
 	}
 
 }

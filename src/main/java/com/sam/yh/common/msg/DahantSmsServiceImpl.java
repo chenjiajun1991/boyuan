@@ -185,4 +185,16 @@ public class DahantSmsServiceImpl implements DahantSmsService {
 		return sendSms(mobilePhone, content);
 	}
 
+	@Override
+	public boolean sendErrorMessage(String mobilePhone, String message) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean sendSosMessage(String mobilePhone) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

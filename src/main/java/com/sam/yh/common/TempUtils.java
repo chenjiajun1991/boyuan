@@ -85,7 +85,6 @@ public class TempUtils {
         result[54] = new Pair(-18, 900);
         result[55] = new Pair(-20, 920);
         
-        
         return result;
     }
 

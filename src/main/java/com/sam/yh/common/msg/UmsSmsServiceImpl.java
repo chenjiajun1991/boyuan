@@ -29,14 +29,18 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     @Override
     public boolean sendSignupAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "您正在注册为亚亨蓄电池会员，注册验证码为" + authCode + "，请在30分钟内使用！";
+//        String content = "您正在注册为亚亨蓄电池会员，注册验证码为" + authCode + "，请在30分钟内使用！";
+//        String content = "欢迎注册珍友趣,你的验证码为"+authCode+",请30分钟内使用。";
+    	String content = "你的验证码为"+authCode+",请及时查看。";
         return sendSms(mobilePhone, content);
     }
 
     @Override
     public boolean sendResetPwdAuthCode(String mobilePhone, String authCode) {
         // TODO
-        String content = "您正在重置亚亨蓄电池会员密码，验证码为" + authCode;
+//        String content = "您正在重置亚亨蓄电池会员密码，验证码为" + authCode;
+    	String content = "你的验证码为"+authCode+",请及时查看。";
+        
         return sendSms(mobilePhone, content);
     }
 
@@ -60,6 +64,8 @@ public class UmsSmsServiceImpl implements DahantSmsService {
         String content = "恭喜您已经成为亚亨蓄电池经销商，请登录APP查看。";
         return sendSms(mobilePhone, content);
     }
+    
+ 
 
     @Override
     public boolean sendBuyInfo(String mobilePhone) {
@@ -83,7 +89,9 @@ public class UmsSmsServiceImpl implements DahantSmsService {
     	 // TODO
     	String content = "您的电池电量过低，为保证您的正常出行，请尽快充电。";
     	if(flag==0){
-    		content = "您的电池电量过低，为保证您的正常出行，请尽快充电。";
+    		
+    		content = "您的验证码为：123456.";
+//    		content = "您的电池电量过低，为保证您的正常出行，请尽快充电。";
     	}else if(flag==1){
     		 content = "您的电池电压过高，请查看电池状态。";
     	}
@@ -137,6 +145,20 @@ public class UmsSmsServiceImpl implements DahantSmsService {
 	@Override
 	public boolean sendMovingRemindMsg(String mobilePhone, String btyImei) {
 		String content = "请及时查看车辆是否移动,并确认车辆停放后是否重新布防,若不是,重新关闭再开启后生效,若不使用,请及时关闭布防.";
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendErrorMessage(String mobilePhone, String message) {
+		String content = "你的农机"+message+",请及时查看。";
+		// TODO Auto-generated method stub
+		return sendSms(mobilePhone, content);
+	}
+
+	@Override
+	public boolean sendSosMessage(String mobilePhone) {
+		String content = "您好,轮椅车主遇到紧急情况,请您第一时间与其取得联系,谢谢!";
+
 		return sendSms(mobilePhone, content);
 	}
 

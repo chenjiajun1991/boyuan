@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.FaultInfoNstMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.FaultInfoNst" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="mark_type" property="markType" jdbcType="VARCHAR" />
+    <result column="is_fault" property="isFault" jdbcType="INTEGER" />
+     <result column="byte1" property="byte1" jdbcType="VARCHAR" />
+      <result column="byte2" property="byte2" jdbcType="VARCHAR" />
+      <result column="byte3" property="byte3" jdbcType="VARCHAR" />
+    <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, battery_id, mark_type, is_fault, byte1, byte2, byte3, receive_date
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from fault_info_newest
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from fault_info_newest
+    where battery_id = #{batteryId,jdbcType=BIGINT}
+  </select>
+  
+  
+  <select id="selectByMarkType" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from fault_info_newest
+    where mark_type = #{markType,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectAllFaultInfo" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from fault_info_newest
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from fault_info_newest
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+  
+  
+  <update id="updateByBtyIdSelective" parameterType="com.sam.yh.model.FaultInfoNst" >
+    update fault_info_newest
+    <set >
+      <if test="markType != null" >
+        mark_type = #{markType,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="isFault != null" >
+        is_fault = #{isFault,jdbcType=INTEGER},
+      </if>
+      
+      <if test="byte1 != null" >
+        byte1 = #{byte1,jdbcType=VARCHAR},
+      </if>
+      
+       <if test="byte2 != null" >
+        byte2 = #{byte2,jdbcType=VARCHAR},
+      </if>
+      
+       <if test="byte3 != null" >
+        byte3 = #{byte3,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="receiveDate != null" >
+        receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      </if>  
+   
+    </set>
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </update>
+  
+  
+  
+  
+  <!--  
+  <insert id="insert" parameterType="com.sam.yh.model.FaultInfo" >
+    insert into fault_info (id, battery_id, code_type, fault_type, fault_message, is_newest,mark_type, byte1, byte2, receive_date )
+    values (#{id,jdbcType=BIGINT}, #{batteryId,jdbcType=INTEGER}, #{codeType,jdbcType=VARCHAR}, 
+      #{faultType,jdbcType=INTEGER}, #{faultMessage,jdbcType=VARCHAR}, #{isNewest,jdbcType=INTEGER}, #{markType,jdbcType=VARCHAR},
+      #{byte1,jdbcType=VARCHAR},#{byte2,jdbcType=VARCHAR},
+      #{receiveDate,jdbcType=TIMESTAMP})
+  </insert>
+  -->
+  
+  <insert id="insertSelective" parameterType="com.sam.yh.model.FaultInfoNst" >
+    insert into fault_info_newest
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+       <if test="markType != null" >
+        mark_type,
+      </if>
+       <if test="isFault != null" >
+        is_fault,
+      </if>
+      <if test="byte1 != null" >
+        byte1,
+      </if>
+       <if test="byte2 != null" >
+        byte2,
+      </if>   
+      <if test="byte3 != null" >
+        byte3,
+      </if>      
+      <if test="receiveDate != null" >
+        receive_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+       <if test="markType != null" >
+       #{markType,jdbcType=VARCHAR},
+      </if>
+        <if test="isFault != null" >
+       #{isFault,jdbcType=INTEGER},
+      </if> 
+      <if test="byte1 != null" >
+       #{byte1,jdbcType=VARCHAR},
+      </if>
+      <if test="byte2 != null" >
+       #{byte2,jdbcType=VARCHAR},
+      </if>
+      <if test="byte3 != null" >
+       #{byte3,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveDate != null" >
+        #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

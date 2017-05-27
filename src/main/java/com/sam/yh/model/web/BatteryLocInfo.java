@@ -14,8 +14,23 @@ public class BatteryLocInfo {
 	    private String voltage;
 
 	    private String status;
-
+	    
+	    private String oilPressure;
+	    
+	    private String engineSpeed;
+	    
+	    private String speed;
+	    
+	    private String drumFlowSpeed;
+	    
+	    private String rethresherSpeed;
+	    
+	    private String motorPower;
+	    
+	    private String engineStatus;
+	    
 	    private String receiveDate;
+	    
 
 		public Long getId() {
 			return id;
@@ -71,6 +86,64 @@ public class BatteryLocInfo {
 
 		public void setStatus(String status) {
 			this.status = status;
+		}
+		
+
+		public String getOilPressure() {
+			return oilPressure;
+		}
+
+		public void setOilPressure(String oilPressure) {
+			this.oilPressure = oilPressure;
+		}
+
+		public String getEngineSpeed() {
+			return engineSpeed;
+		}
+
+		public void setEngineSpeed(String engineSpeed) {
+			this.engineSpeed = engineSpeed;
+		}
+
+		public String getSpeed() {
+			return speed;
+		}
+
+		public void setSpeed(String speed) {
+			this.speed = speed;
+		}
+		
+
+		public String getDrumFlowSpeed() {
+			return drumFlowSpeed;
+		}
+
+		public void setDrumFlowSpeed(String drumFlowSpeed) {
+			this.drumFlowSpeed = drumFlowSpeed;
+		}
+
+		public String getRethresherSpeed() {
+			return rethresherSpeed;
+		}
+
+		public void setRethresherSpeed(String rethresherSpeed) {
+			this.rethresherSpeed = rethresherSpeed;
+		}
+
+		public String getMotorPower() {
+			return motorPower;
+		}
+
+		public void setMotorPower(String motorPower) {
+			this.motorPower = motorPower;
+		}
+
+		public String getEngineStatus() {
+			return engineStatus;
+		}
+
+		public void setEngineStatus(String engineStatus) {
+			this.engineStatus = engineStatus;
 		}
 
 		public String getReceiveDate() {

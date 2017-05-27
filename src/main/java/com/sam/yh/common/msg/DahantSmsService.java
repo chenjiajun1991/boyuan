@@ -27,5 +27,9 @@ public interface DahantSmsService {
     public boolean sendViolentDestroyService(String mobilePhone,String btyImei,String userName,String userPhone);
     
     public boolean sendMovingRemindMsg(String mobilePhone, String btyImei);
+    
+    public boolean sendErrorMessage(String mobilePhone, String message);
+    
+    public boolean sendSosMessage(String mobilePhone);
 
 }

@@ -17,6 +17,25 @@ public class BatteryInfoReq implements Serializable {
     private String motorspeed;
     private String speed;
     
+    private String speedz; 
+    private String speedf;
+  
+    private String enginestatus;
+    private String ecupower;
+    private String motorpower;
+    
+    
+    private String hexString;
+    
+    private String hex1;
+    private String hex2;
+    
+    private String string;
+    private String len;
+    
+    private String version;
+    
+    
     public String getImei() {
         return imei;
     }
@@ -58,19 +77,19 @@ public class BatteryInfoReq implements Serializable {
     }
 
     public String getTemperature() {
-        return temperature;
+        return temperature == null ? "25" :temperature;
     }
 
     public void setTemperature(String temperature) {
-        this.temperature = temperature;
+        this.temperature = temperature == null ? "25" :temperature.trim();
     }
 
     public String getVoltage() {
-        return voltage;
+        return voltage == null ? "600" : voltage;
     }
 
     public void setVoltage(String voltage) {
-        this.voltage = voltage;
+        this.voltage = voltage == null ? "600" : voltage.trim();
     }
 
 	public String getPressure() {
@@ -98,6 +117,102 @@ public class BatteryInfoReq implements Serializable {
 	public void setSpeed(String speed) {
 		this.speed = speed;
 	}
+	
+	
+	public String getSpeedz() {
+		return speedz;
+	}
+
+	public void setSpeedz(String speedz) {
+		this.speedz = speedz == null ? "0" : speedz;
+	}
+
+	public String getSpeedf() {
+		return speedf;
+	}
+
+	public void setSpeedf(String speedf) {
+		this.speedf = speedf == null ? "0" : speedf;;
+	}
+	
+
+	public String getEnginestatus() {
+		return enginestatus;
+	}
+
+	public void setEnginestatus(String enginestatus) {
+		this.enginestatus = enginestatus;
+	}
+
+	public String getEcupower() {
+		return ecupower;
+	}
+
+	public void setEcupower(String ecupower) {
+		this.ecupower = ecupower;
+	}
+
+	public String getMotorpower() {
+		return motorpower;
+	}
+
+	public void setMotorpower(String motorpower) {
+		this.motorpower = motorpower;
+	}
+	
+
+	public String getHexString() {
+		return hexString;
+	}
+
+	public void setHexString(String hexString) {
+		this.hexString = hexString;
+	}
+	
+
+	public String getHex1() {
+		return hex1;
+	}
+
+	public void setHex1(String hex1) {
+		this.hex1 = hex1;
+	}
+
+	public String getHex2() {
+		return hex2;
+	}
+
+	public void setHex2(String hex2) {
+		this.hex2 = hex2;
+	}
+	
+	
+
+	public String getString() {
+		return string;
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
+
+	public String getLen() {
+		return len;
+	}
+
+	public void setLen(String len) {
+		this.len = len;
+	}
+	
+	
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
 
 	@Override
 	public String toString() {
@@ -105,9 +220,12 @@ public class BatteryInfoReq implements Serializable {
 				+ ", phonenumber=" + phonenumber + ", longitude=" + longitude
 				+ ", latitude=" + latitude + ", temperature=" + temperature
 				+ ", voltage=" + voltage + ", pressure=" + pressure
-				+ ", motorspeed=" + motorspeed + ", speed=" + speed + "]";
+				+ ", motorspeed=" + motorspeed + ", speed=" + speed
+				+ ", speedz=" + speedz + ", speedf=" + speedf
+				+ ", enginestatus=" + enginestatus + ", ecupower=" + ecupower
+				+ ", motorpower=" + motorpower + ", hexString=" + hexString
+				+ ", hex1=" + hex1 + ", hex2=" + hex2 + ", string=" + string
+				+ ", len=" + len + ", version=" + version + "]";
 	}
-    
-
 
 }

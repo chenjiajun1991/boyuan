@@ -11,6 +11,9 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +22,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.wsdl.Input;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -26,7 +31,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sam.yh.common.ParseUtil;
 import com.sam.yh.req.bean.BatteryInfoReq;
+import com.sam.yh.req.bean.UploadFaultMessageReq;
+import com.sam.yh.req.bean.UploadOrderRegisterMsgReq;
 import com.sam.yh.service.BatteryService;
 
 @Service
@@ -55,6 +63,8 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 		ctx.write("Welcome, It is " + new Date() + " now.\r\n");
 		ctx.flush();
 	}
+	
+	
 
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, String request)
@@ -77,14 +87,44 @@ public class SamBtyDataHandler extends SimpleChannelInboundHandler<String> {
 				channelMap.put(infoReq.getImei(), ctx.channel());
 				//记录远程IP和端口
                 logRemoteAddr(infoReq.getImei(), ctx.channel());
+                
+    			if (channels.contains(ctx.channel())) {
+    				ctx.channel().attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
+    			}
+    			batteryService.uploadBatteryInfo(infoReq);
+    			response = "got it\n";	
+    			if(infoReq.getLen()!= null && infoReq.getString()!= null){
+    				logger.info("BatteryInfoReq message:" + "len:"+infoReq.getLen()+"len="+infoReq.getString().length());
+    			}
+    			
+    			
+			}else{
+				UploadFaultMessageReq faultReq = BtyDataConverter.convertFault(request);
 				
+				
+				if(faultReq != null && faultReq.getFaultimei() != null){
+					if(faultReq.getLen() != null && faultReq.getString()!= null){
+						logger.info("faultReq message:" + "len:"+faultReq.getLen()+"len="+faultReq.getString().length());
+					}		
+					batteryService.uploadFaultInfo(faultReq);
+					response = "ok\n";
+				}else{
+					
+					
+					
+					UploadOrderRegisterMsgReq req =  BtyDataConverter.convertReq(request);
+					
+					if(req != null && req.getHyimei() != null){
+						batteryService.uploadOrderRegister(req);
+						
+						response = "ok\n";
+					}else{
+						response = "Unable to identify the string\n";
+						logger.info("Unable to identify the string:" + request);
+					}
+					
+				}	
 			}
-
-			if (channels.contains(ctx.channel())) {
-				ctx.channel().attr(AttributeKey.valueOf("IMEI")).set(infoReq.getImei());
-			}
-			batteryService.uploadBatteryInfo(infoReq);
-			response = "got it\n";
 		}
 
 		// We do not need to write a ChannelBuffer here.

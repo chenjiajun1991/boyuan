@@ -6,8 +6,10 @@ public class Enginer {
 	private int batteryId;
 	private int lockOne;
 	private int lockTwo;
+	private String lockBind;
 	private Date lockOneDate;
 	private Date lockTwoDate;
+	private Date lockBindDate;
 	
 	public int getBatteryId() {
 		return batteryId;
@@ -39,5 +41,18 @@ public class Enginer {
 	public void setLockTwoDate(Date lockTwoDate) {
 		this.lockTwoDate = lockTwoDate;
 	}
+	public String getLockBind() {
+		return lockBind;
+	}
+	public void setLockBind(String lockBind) {
+		this.lockBind = lockBind;
+	}
+	public Date getLockBindDate() {
+		return lockBindDate;
+	}
+	public void setLockBindDate(Date lockBindDate) {
+		this.lockBindDate = lockBindDate;
+	}
+	
 		
 }

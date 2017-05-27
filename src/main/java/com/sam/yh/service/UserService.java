@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
+import com.sam.yh.model.FaultInfo;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.User;
 
@@ -58,5 +59,18 @@ public interface UserService {
     public void lockEgTwo(String mobilePhone, String btyImei)throws CrudException;
     
     @Transactional
-    public void unLockEgTwo(String mobilePhone, String btyImei)throws CrudException;  
+    public void unLockEgTwo(String mobilePhone, String btyImei)throws CrudException;
+    
+    @Transactional
+    public void writeMessage(String mobilePhone, String btyImei,String message)throws CrudException;  
+      
+    @Transactional
+    public void lockBind(String mobilePhone, String btyImei)throws CrudException;  
+    
+    @Transactional
+    public List<FaultInfo> fetchFault(String btyImei , String flag)throws CrudException;  
+    
+    @Transactional
+    public void sendSosMessage(String mobilePhone) throws CrudException;
+    
 }

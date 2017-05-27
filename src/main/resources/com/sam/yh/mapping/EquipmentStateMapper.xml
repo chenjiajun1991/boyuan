@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.EquipmentStateMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.EquipmentState" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    
+   <result column="electric_horn_switch_state" property="electricHornSwitchState" jdbcType="INTEGER" />
+   <result column="oil_fan_switch_state" property="oilFanSwitchState" jdbcType="INTEGER" />
+   <result column="gap_switch_state" property="gapSwitchState" jdbcType="INTEGER" />
+   <result column="generator_state" property="generatorState" jdbcType="INTEGER" />
+   <result column="barn_full_switch_state" property="barnFullSwitchState" jdbcType="INTEGER" />
+   
+   <result column="stop_lamp_switch_state" property="stopLampSwitchState" jdbcType="INTEGER" />
+   <result column="hand_brake_switch_state" property="handBrakeSwitchState" jdbcType="INTEGER" />
+   <result column="before_working_lamp_switch_state" property="beforeWorkingLampSwitchState" jdbcType="INTEGER" />
+   <result column="reversing_switch_state" property="reversingSwitchState" jdbcType="INTEGER" />
+   <result column="peeling_machine_lord_switch_state" property="peelingMachineLordSwitchState" jdbcType="INTEGER" />
+   <result column="key_1_state" property="key1State" jdbcType="INTEGER" />
+   
+   <result column="key_2_state" property="key2State" jdbcType="INTEGER" />
+   <result column="key_3_state" property="key3State" jdbcType="INTEGER" />
+   <result column="width_lamp_state" property="widthLampState" jdbcType="INTEGER" />
+   <result column="dipped_headlight_state" property="dippedHeadlightState" jdbcType="INTEGER" />
+   <result column="high_beam_state" property="highBeamState" jdbcType="INTEGER" />
+   
+   <result column="left_turn_signal_state" property="leftTurnSignalState" jdbcType="INTEGER" />
+   <result column="right_turn_signal_state" property="rightTurnSignalState" jdbcType="INTEGER" />
+   <result column="front_work_light_state" property="frontWorkLightState" jdbcType="INTEGER" />
+   <result column="after_working_lamp_state" property="afterWorkingLampState" jdbcType="INTEGER" />
+   <result column="stop_lamp_state" property="stopLampState" jdbcType="INTEGER" />
+   
+   <result column="brake_solenoid_state" property="brakeSolenoidState" jdbcType="INTEGER" />
+   <result column="backup_lamp_state" property="backupLampState" jdbcType="INTEGER" />
+   <result column="sensor_voltage_state" property="sensorVoltageState" jdbcType="INTEGER" />
+   <result column="ecu_power_state" property="ecuPowerState" jdbcType="INTEGER" />
+   <result column="ecu_control_power_state" property="ecuControlPowerState" jdbcType="INTEGER" />
+   
+   <result column="electromagnetic_pump_state" property="electromagneticPumpState" jdbcType="INTEGER" />
+   <result column="air_conditioner_dim_wind_power_state" property="airConditionerDimWindPowerState" jdbcType="INTEGER" />
+   <result column="fan_dome_light_power_state" property="fanDomeLightPowerState" jdbcType="INTEGER" />
+   <result column="wiper_power_state" property="wiperPowerState" jdbcType="INTEGER" />
+   <result column="oil_fan_power_state" property="oilFanPowerState" jdbcType="INTEGER" />
+   
+   <result column="toss_motor_power_state" property="tossMotorPowerState" jdbcType="INTEGER" />
+   <result column="clean_fan_1_state" property="cleanFan1State" jdbcType="INTEGER" />
+   <result column="clean_fan_2_state" property="cleanFan2State" jdbcType="INTEGER" />
+   <result column="generator_excitation_state" property="generatorExcitationState" jdbcType="INTEGER" />
+   <result column="constant_speed_lift_state" property="constantSpeedLiftState" jdbcType="INTEGER" />
+   
+   <result column="granary_alarm_lamp_state" property="granaryAlarmLampState" jdbcType="INTEGER" />
+   <result column="fault_alarm_lamp_state" property="faultAlarmLampState" jdbcType="INTEGER" />
+    <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, battery_id, electric_horn_switch_state, oil_fan_switch_state, gap_switch_state,
+    generator_state, barn_full_switch_state, stop_lamp_switch_state, hand_brake_switch_state,
+    before_working_lamp_switch_state, reversing_switch_state, peeling_machine_lord_switch_state,
+    key_1_state, key_2_state, key_3_state, width_lamp_state, dipped_headlight_state, high_beam_state, 
+    left_turn_signal_state, right_turn_signal_state, front_work_light_state, after_working_lamp_state,
+    stop_lamp_state, brake_solenoid_state, backup_lamp_state, sensor_voltage_state, ecu_power_state,
+    ecu_control_power_state, electromagnetic_pump_state, air_conditioner_dim_wind_power_state,
+    fan_dome_light_power_state,  wiper_power_state, oil_fan_power_state, toss_motor_power_state,
+    clean_fan_1_state, clean_fan_2_state, generator_excitation_state, constant_speed_lift_state,
+    granary_alarm_lamp_state, fault_alarm_lamp_state, receive_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from equipment_state
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from equipment_state
+    where battery_id = #{batteryId,jdbcType=BIGINT}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from equipment_state
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+ 
+  
+  <insert id="insert" parameterType="com.sam.yh.model.EquipmentState" >
+    insert into equipment_state (
+    id, battery_id, electric_horn_switch_state, oil_fan_switch_state, gap_switch_state,
+    generator_state, barn_full_switch_state, stop_lamp_switch_state, hand_brake_switch_state,
+    before_working_lamp_switch_state, reversing_switch_state, peeling_machine_lord_switch_state,
+    key_1_state, key_2_state, key_3_state, width_lamp_state, dipped_headlight_state, high_beam_state, 
+    left_turn_signal_state, right_turn_signal_state, front_work_light_state, after_working_lamp_state,
+    stop_lamp_state, brake_solenoid_state, backup_lamp_state, sensor_voltage_state, ecu_power_state,
+    ecu_control_power_state, electromagnetic_pump_state, air_conditioner_dim_wind_power_state,
+    fan_dome_light_power_state,  wiper_power_state, oil_fan_power_state, toss_motor_power_state,
+    clean_fan_1_state, clean_fan_2_state, generator_excitation_state, constant_speed_lift_state,
+    granary_alarm_lamp_state, fault_alarm_lamp_state, receive_date)
+    values (
+    #{id,jdbcType=BIGINT}, #{batteryId,jdbcType=INTEGER}, #{electricHornSwitchState,jdbcType=INTEGER},  #{oilFanSwitchState,jdbcType=INTEGER}
+       #{gapSwitchState,jdbcType=INTEGER},#{generatorState,jdbcType=INTEGER},#{barnFullSwitchState,jdbcType=INTEGER},#{stopLampSwitchState,jdbcType=INTEGER},
+       #{handBrakeSwitchState,jdbcType=INTEGER},#{beforeWorkingLampSwitchState,jdbcType=INTEGER},#{reversingSwitchState,jdbcType=INTEGER},
+       #{peelingMachineLordSwitchState,jdbcType=INTEGER}, #{key1State,jdbcType=INTEGER},#{key2State,jdbcType=INTEGER},#{key3State,jdbcType=INTEGER},
+       #{widthLampState,jdbcType=INTEGER}, #{dippedHeadlightState,jdbcType=INTEGER},#{highBeamState,jdbcType=INTEGER},#{leftTurnSignalState,jdbcType=INTEGER},
+       #{rightTurnSignalState,jdbcType=INTEGER}, #{frontWorkLightState,jdbcType=INTEGER},#{afterWorkingLampState,jdbcType=INTEGER},#{stopLampState,jdbcType=INTEGER},
+       #{brakeSolenoidState,jdbcType=INTEGER},#{backupLampState,jdbcType=INTEGER},#{sensorVoltageState,jdbcType=INTEGER},#{ecuPowerState,jdbcType=INTEGER},
+       #{ecuControlPowerState,jdbcType=INTEGER}, #{electromagneticPumpState,jdbcType=INTEGER},#{airConditionerDimWindPowerState,jdbcType=INTEGER},
+       #{fanDomeLightPowerState,jdbcType=INTEGER},#{wiperPowerState,jdbcType=INTEGER}, #{oilFanPowerState,jdbcType=INTEGER},#{tossMotorPowerState,jdbcType=INTEGER},
+       #{cleanFan1State,jdbcType=INTEGER}, #{cleanFan2State,jdbcType=INTEGER}, #{generatorExcitationState,jdbcType=INTEGER},#{constantSpeedLiftState,jdbcType=INTEGER},
+       #{granaryAlarmLampState,jdbcType=INTEGER},#{faultAlarmLampState,jdbcType=INTEGER},#{receiveDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.sam.yh.model.EquipmentState" >
+    insert into equipment_state
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="electricHornSwitchState != null" >
+        electric_horn_switch_state,
+      </if>
+      <if test="oilFanSwitchState != null" >
+        oil_fan_switch_state,
+      </if>
+      <if test="gapSwitchState != null" >
+        gap_switch_state,
+      </if>
+       <if test="generatorState != null" >
+        generator_state,
+      </if>
+       <if test="barnFullSwitchState != null" >
+        barn_full_switch_state,
+      </if>
+      
+      <if test="stopLampSwitchState != null" >
+        stop_lamp_switch_state,
+      </if>
+      <if test="handBrakeSwitchState != null" >
+        hand_brake_switch_state,
+      </if>
+      <if test="beforeWorkingLampSwitchState != null" >
+        before_working_lamp_switch_state,
+      </if>
+      <if test="reversingSwitchState != null" >
+        reversing_switch_state,
+      </if>
+      <if test="peelingMachineLordSwitchState != null" >
+        peeling_machine_lord_switch_state,
+      </if>
+      
+      <if test="key1State != null" >
+        key_1_state,
+      </if>
+      <if test="key2State != null" >
+        key_2_state,
+      </if>
+      <if test="key3State != null" >
+        key_3_state,
+      </if>
+      <if test="widthLampState != null" >
+        width_lamp_state,
+      </if>
+      <if test="dippedHeadlightState != null" >
+        dipped_headlight_state,
+      </if>
+      
+      
+      <if test="highBeamState != null" >
+        high_beam_state,
+      </if>
+      <if test="leftTurnSignalState != null" >
+        left_turn_signal_state,
+      </if>
+      <if test="rightTurnSignalState != null" >
+        right_turn_signal_state,
+      </if>
+      <if test="frontWorkLightState != null" >
+        front_work_light_state,
+      </if>
+      <if test="afterWorkingLampState != null" >
+        after_working_lamp_state,
+      </if>
+      
+      <if test="stopLampState != null" >
+        stop_lamp_state,
+      </if>
+      <if test="brakeSolenoidState != null" >
+        brake_solenoid_state,
+      </if>
+      <if test="backupLampState != null" >
+        backup_lamp_state,
+      </if>
+      <if test="sensorVoltageState != null" >
+        sensor_voltage_state,
+      </if>
+      <if test="ecuPowerState != null" >
+        ecu_power_state,
+      </if>
+      
+      <if test="ecuControlPowerState != null" >
+        ecu_control_power_state,
+      </if>
+      <if test="electromagneticPumpState != null" >
+        electromagnetic_pump_state,
+      </if>
+      <if test="airConditionerDimWindPowerState != null" >
+        air_conditioner_dim_wind_power_state,
+      </if>
+      <if test="fanDomeLightPowerState != null" >
+        fan_dome_light_power_state,
+      </if>
+      <if test="wiperPowerState != null" >
+        wiper_power_state,
+      </if>
+      
+        <if test="oilFanPowerState != null" >
+        oil_fan_power_state,
+       </if>
+        <if test="tossMotorPowerState != null" >
+        toss_motor_power_state,
+       </if>
+        <if test="cleanFan1State != null" >
+        clean_fan_1_state,
+       </if>
+        <if test="cleanFan2State != null" >
+        clean_fan_2_state,
+       </if>
+      
+        <if test="generatorExcitationState != null" >
+        generator_excitation_state,
+       </if>
+        <if test="constantSpeedLiftState != null" >
+        constant_speed_lift_state,
+       </if>
+        <if test="granaryAlarmLampState != null" >
+        granary_alarm_lamp_state,
+       </if>
+        <if test="faultAlarmLampState != null" >
+        fault_alarm_lamp_state,
+       </if>
+      
+      <if test="receiveDate != null" >
+        receive_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      
+      <if test="electricHornSwitchState != null" >
+        #{electricHornSwitchState,jdbcType=INTEGER},
+      </if>
+      <if test="oilFanSwitchState != null" >
+        #{oilFanSwitchState,jdbcType=INTEGER},
+      </if><if test="gapSwitchState != null" >
+        #{gapSwitchState,jdbcType=INTEGER},
+      </if>
+      <if test="generatorState != null" >
+        #{generatorState,jdbcType=INTEGER},
+      </if>
+      <if test="barnFullSwitchState != null" >
+        #{barnFullSwitchState,jdbcType=INTEGER},
+      </if><if test="stopLampSwitchState != null" >
+        #{stopLampSwitchState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="handBrakeSwitchState != null" >
+        #{handBrakeSwitchState,jdbcType=INTEGER},
+      </if>
+      <if test="beforeWorkingLampSwitchState != null" >
+        #{beforeWorkingLampSwitchState,jdbcType=INTEGER},
+      </if><if test="reversingSwitchState != null" >
+        #{reversingSwitchState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="peelingMachineLordSwitchState != null" >
+        #{peelingMachineLordSwitchState,jdbcType=INTEGER},
+      </if>
+      <if test="key1State != null" >
+        #{key1State,jdbcType=INTEGER},
+      </if><if test="key2State != null" >
+        #{key2State,jdbcType=INTEGER},
+      </if>
+      
+      <if test="key3State != null" >
+        #{key3State,jdbcType=INTEGER},
+      </if>
+      <if test="widthLampState != null" >
+        #{widthLampState,jdbcType=INTEGER},
+      </if><if test="dippedHeadlightState != null" >
+        #{dippedHeadlightState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="highBeamState != null" >
+        #{highBeamState,jdbcType=INTEGER},
+      </if>
+      <if test="leftTurnSignalState != null" >
+        #{leftTurnSignalState,jdbcType=INTEGER},
+      </if><if test="rightTurnSignalState != null" >
+        #{rightTurnSignalState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="frontWorkLightState != null" >
+        #{frontWorkLightState,jdbcType=INTEGER},
+      </if>
+      <if test="afterWorkingLampState != null" >
+        #{afterWorkingLampState,jdbcType=INTEGER},
+      </if><if test="stopLampState != null" >
+        #{stopLampState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="brakeSolenoidState != null" >
+        #{brakeSolenoidState,jdbcType=INTEGER},
+      </if>
+      <if test="backupLampState != null" >
+        #{backupLampState,jdbcType=INTEGER},
+      </if><if test="sensorVoltageState != null" >
+        #{sensorVoltageState,jdbcType=INTEGER},
+      </if>
+      
+       <if test="ecuPowerState != null" >
+        #{ecuPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="ecuControlPowerState != null" >
+        #{ecuControlPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="electromagneticPumpState != null" >
+        #{electromagneticPumpState,jdbcType=INTEGER},
+      </if>
+       <if test="airConditionerDimWindPowerState != null" >
+        #{airConditionerDimWindPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="fanDomeLightPowerState != null" >
+        #{fanDomeLightPowerState,jdbcType=INTEGER},
+      </if>
+      <if test="wiperPowerState != null" >
+        #{wiperPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="oilFanPowerState != null" >
+        #{oilFanPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="tossMotorPowerState != null" >
+        #{tossMotorPowerState,jdbcType=INTEGER},
+      </if>
+       <if test="cleanFan1State != null" >
+        #{cleanFan1State,jdbcType=INTEGER},
+      </if>
+       <if test="cleanFan2State != null" >
+        #{cleanFan2State,jdbcType=INTEGER},
+      </if>
+      <if test="generatorExcitationState != null" >
+        #{generatorExcitationState,jdbcType=INTEGER},
+      </if>
+       <if test="constantSpeedLiftState != null" >
+        #{constantSpeedLiftState,jdbcType=INTEGER},
+      </if>
+       <if test="granaryAlarmLampState != null" >
+        #{granaryAlarmLampState,jdbcType=INTEGER},
+      </if>
+       <if test="faultAlarmLampState != null" >
+        #{faultAlarmLampState,jdbcType=INTEGER},
+      </if>
+      
+      <if test="receiveDate != null" >
+        #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

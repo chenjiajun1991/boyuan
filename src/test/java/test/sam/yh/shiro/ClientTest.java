@@ -35,9 +35,9 @@ public class ClientTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         // 创建一个server
-        server = new Server(8080);
+        server = new Server(8090);
         WebAppContext context = new WebAppContext();
-        String webapp = "F:/github/asm/WebContent";
+        String webapp = "E:/boyuan/boyuan/WebContent";
         context.setDescriptor(webapp + "/WEB-INF/web.xml"); // 指定web.xml配置文件
         context.setResourceBase(webapp); // 指定webapp目录
         context.setContextPath("/");

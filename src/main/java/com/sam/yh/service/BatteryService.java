@@ -8,14 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.model.OrderRegister;
 import com.sam.yh.req.bean.BatteryInfoReq;
+import com.sam.yh.req.bean.UploadFaultMessageReq;
+import com.sam.yh.req.bean.UploadOrderRegisterMsgReq;
 
 public interface BatteryService {
 
 //    @Transactional
 	@Async("asyncExecutor")
     public Future<Battery> uploadBatteryInfo(BatteryInfoReq batteryInfoReqVo) throws CrudException;
-
+	
+	@Async("asyncExecutor")
+    public Future<Battery> uploadFaultInfo(UploadFaultMessageReq faultInfoReqVo) throws CrudException;
+	
     @Transactional
     public Battery addBattery(Battery battery);
 
@@ -44,4 +50,13 @@ public interface BatteryService {
     
     @Transactional
     public int fetchRssi(int btyId) throws CrudException;
+    
+    @Transactional
+    public void sendOrderRegister(String imei ,String msg)throws CrudException;
+    
+    @Transactional
+    public OrderRegister fetchOrderRegister(String imei)throws CrudException;
+    
+    @Transactional
+    public void uploadOrderRegister(UploadOrderRegisterMsgReq req)throws CrudException;
 }

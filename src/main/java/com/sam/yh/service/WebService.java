@@ -6,11 +6,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.model.EquipmentState;
+import com.sam.yh.model.FaultInfoNst;
 import com.sam.yh.model.User;
 import com.sam.yh.model.web.BatteryLocInfo;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
 import com.sam.yh.model.web.TroubleBtyInfo;
+import com.sam.yh.resp.bean.web.FetchAllMachineFault;
+import com.sam.yh.resp.bean.web.FetchSingleFaultInfos;
 
 public interface WebService {
 	    @Transactional
@@ -48,4 +53,17 @@ public interface WebService {
 	    
 	    @Transactional
 	    public void updateBtyReseller (int btyId, String resellerName,String resellerPhone)throws CrudException;
+	    
+	    @Transactional
+	    public List<FetchAllMachineFault> fetchAllMachineFault(String userPhone , int flag)throws CrudException;
+	    
+	    @Transactional
+	    public List<FetchSingleFaultInfos> fetchSingleFaultInfos(String imei)throws CrudException;
+	    
+	    @Transactional
+	    public EquipmentState fetchEquipmentStates(String imei)throws CrudException;
+	    
+	    @Transactional
+	    public BatteryInfoNst fetchBatteryInfoNst(String imei)throws CrudException;
+	    
 }

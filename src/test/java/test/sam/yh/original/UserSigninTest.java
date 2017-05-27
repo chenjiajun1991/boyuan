@@ -26,9 +26,9 @@ public class UserSigninTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         // 创建一个server
-        server = new Server(8080);
+        server = new Server(8090);
         WebAppContext context = new WebAppContext();
-        String webapp = "F:/github/asm/WebContent";
+        String webapp = "E:/boyuan/boyuan/WebContent";
         context.setDescriptor(webapp + "/WEB-INF/web.xml"); // 指定web.xml配置文件
         context.setResourceBase(webapp); // 指定webapp目录
         context.setContextPath("/");
@@ -45,15 +45,15 @@ public class UserSigninTest {
         // reqObj.setAppName("samyh");
         // reqObj.setDeviceType("android");
         // reqObj.setVersion("0.0.1");
-        reqObj.setUserPhone("13900000025");
-        reqObj.setPassword("95021181");
+        reqObj.setUserPhone("18321014213");
+        reqObj.setPassword("123456789");
         reqObj.setDeviceInfo("XXXXXXXXXXX");
 
         String jsonReq = JSON.toJSONString(reqObj);
 
         logger.info("Reuqest json String:" + jsonReq);
 
-        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/user/signin.json").build().toUriString();
+        String url = UriComponentsBuilder.fromHttpUrl("http://localhost:8090/user/signin.json").build().toUriString();
 
         logger.info("Request URL:" + url);
 

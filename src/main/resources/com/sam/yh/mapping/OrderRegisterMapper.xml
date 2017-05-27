@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.OrderRegisterMapper" >
+  <resultMap id="BaseResultMap" type="com.sam.yh.model.OrderRegister" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="msg_status" property="msgStatus" jdbcType="VARCHAR" />
+    <result column="send_msg" property="sendMsg" jdbcType="VARCHAR" />
+    <result column="receive_msg" property="receiveMsg" jdbcType="VARCHAR" />
+
+    <result column="send_date" property="sendDate" jdbcType="TIMESTAMP" />
+    <result column="receive_date" property="receiveDate" jdbcType="TIMESTAMP" />
+    
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, battery_id, status, msg_status, send_msg, receive_msg, send_date, receive_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_register
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from order_register
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from order_register
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  
+ 
+  <insert id="insertSelective" parameterType="com.sam.yh.model.OrderRegister" >
+    insert into order_register
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="batteryId != null" >
+        battery_id,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="msgStatus != null" >
+        msg_status,
+      </if>
+      <if test="sendMsg != null" >
+        send_msg,
+      </if>  
+      <if test="receiveMsg != null" >
+        receive_msg,
+      </if>
+      <if test="sendDate != null" >
+        send_date,
+      </if>
+      <if test="receiveDate != null" >
+        receive_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="batteryId != null" >
+        #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="msgStatus != null" >
+        #{msgStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendMsg != null" >
+        #{sendMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveMsg != null" >
+        #{receiveMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null" >
+        #{sendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveDate != null" >
+        #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+      
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.sam.yh.model.OrderRegister" >
+    update order_register
+    <set >
+      <if test="batteryId != null" >
+        battery_id = #{batteryId,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="msgStatus != null" >
+        msg_status = #{msgStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="sendMsg != null" >
+       send_msg = #{sendMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="receiveMsg != null" >
+        receive_msg = #{receiveMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDate != null" >
+        send_date = #{sendDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiveDate != null" >
+        receive_date = #{receiveDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+ 
+</mapper>

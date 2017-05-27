@@ -15,7 +15,9 @@ public enum UserCodeType {
     BTY_VOLTAGE_WARNING(7, "异常警告"),
     BTY_DISTORY(8,"电池被破坏"),
     BTY_DISTORY_SERVICE(9,"发送电池破换信息至客服"),
-    BTY_MOVING_REMIND(10,"布防未关提醒");
+    BTY_MOVING_REMIND(10,"布防未关提醒"),
+    BTY_ERROR_REMIND(11,"故障提醒"),
+    BTY_SOS(12,"一键急救");
     private static List<Integer> types = new ArrayList<Integer>();
 
     static {

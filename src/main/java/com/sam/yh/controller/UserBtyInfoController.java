@@ -4,6 +4,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.util.AttributeKey;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +24,9 @@ import com.sam.yh.common.IllegalParamsException;
 import com.sam.yh.common.MobilePhoneUtils;
 import com.sam.yh.common.PowerCalUtil;
 import com.sam.yh.common.SamConstants;
+import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.model.Battery;
+import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.req.bean.FetchBtyInfoReq;
 import com.sam.yh.resp.bean.ResponseUtils;
@@ -139,6 +142,38 @@ public class UserBtyInfoController {
 		}
 
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/sos", method = RequestMethod.POST)
+	public SamResponse fetchBtySos(HttpServletRequest httpServletRequest,
+			@RequestParam("jsonReq") String jsonReq) {
+
+		logger.info("Request json String:" + jsonReq);
+
+		FetchBtyInfoReq req = JSON.parseObject(jsonReq, FetchBtyInfoReq.class);
+
+		try {
+			validateUserArgs(req.getUserPhone());
+			
+			userService.sendSosMessage(req.getUserPhone());
+
+			return ResponseUtils.getNormalResp("已发送");
+		} catch (IllegalParamsException e) {
+			return ResponseUtils.getParamsErrorResp(e.getMessage());
+		}catch (CrudException e) {
+			return ResponseUtils.getParamsErrorResp(e.getMessage());
+		} catch (Exception e) {
+			logger.error("fetch bty info exception, " + req.getUserPhone(), e);
+			return ResponseUtils.getSysErrorResp();
+		}
+
+	}
+	
+	
+
+	
 
 	private UserBtyInfo convertToUserBtyInfo(PubBatteryInfo pubBatteryInfo) {
 		UserBtyInfo userBtyInfo = new UserBtyInfo();
@@ -148,11 +183,25 @@ public class UserBtyInfoController {
 		userBtyInfo.setLongitude(pubBatteryInfo.getLongitude());
 		userBtyInfo.setLatitude(pubBatteryInfo.getLatitude());
 		userBtyInfo.setTemperature(pubBatteryInfo.getTemperature());
+		userBtyInfo.setOilPressure(pubBatteryInfo.getOilPressure());
+		userBtyInfo.setEngineSpeed(pubBatteryInfo.getEngineSpeed());
+		userBtyInfo.setSpeed(pubBatteryInfo.getSpeed());
 		userBtyInfo.setVoltage(pubBatteryInfo.getVoltage());
+		userBtyInfo.setDrumFlowSpeed(pubBatteryInfo.getDrumFlowSpeed());
+		userBtyInfo.setRethresherSpeed(pubBatteryInfo.getRethresherSpeed());
 		Battery battery = batteryService.fetchBtyById(pubBatteryInfo
 				.getBatteryId());
 		userBtyInfo.setPower(PowerCalUtil.calPower(pubBatteryInfo.getVoltage(),
 				battery.getBtyQuantity()));
+		userBtyInfo.setEngineStatus(pubBatteryInfo.getEngineStatus());
+		userBtyInfo.setMotorPower(pubBatteryInfo.getMotorPower());
+		
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = formatter.format(pubBatteryInfo.getReceiveDate());
+		userBtyInfo.setReceiveDate(dateString);
+
+		
 		return userBtyInfo;
 	}
 

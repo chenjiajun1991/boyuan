@@ -8,9 +8,16 @@
     <result column="latitude" property="latitude" jdbcType="VARCHAR" />
     <result column="temperature" property="temperature" jdbcType="VARCHAR" />
     
-     <result column="oil_pressure" property="oilPressure" jdbcType="VARCHAR" />
+    <result column="oil_pressure" property="oilPressure" jdbcType="VARCHAR" />
     <result column="engine_speed" property="engineSpeed" jdbcType="VARCHAR" />
     <result column="speed" property="speed" jdbcType="VARCHAR" />
+    
+    <result column="drum_flow_speed" property="drumFlowSpeed" jdbcType="VARCHAR" />
+    <result column="rethresher_speed" property="rethresherSpeed" jdbcType="VARCHAR" />
+    
+     <result column="engine_status" property="engineStatus" jdbcType="VARCHAR" />
+    <result column="ecu_power" property="ecuPower" jdbcType="VARCHAR" />
+    <result column="motor_power" property="motorPower" jdbcType="VARCHAR" />
     
     <result column="voltage" property="voltage" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="CHAR" />
@@ -19,7 +26,7 @@
     <result column="sample_date" property="sampleDate" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, battery_id, longitude, latitude, temperature, oil_pressure, engine_speed, speed, voltage, status, extension, receive_date, 
+    id, battery_id, longitude, latitude, temperature, oil_pressure, engine_speed, speed, drum_flow_speed, rethresher_speed, engine_status, ecu_power, motor_power, voltage, status, extension, receive_date, 
     sample_date
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
@@ -39,13 +46,14 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.sam.yh.model.BatteryInfoNst" >
-    insert into battery_info_newest (id, battery_id, longitude, 
-      latitude, temperature, oil_pressure, engine_speed, speed, voltage, 
-      status, extension, receive_date, 
-      sample_date)
-    values (#{id,jdbcType=BIGINT}, #{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
+    insert into battery_info_newest (id,battery_id, longitude, 
+      latitude, temperature, oil_pressure, engine_speed, speed, drum_flow_speed, rethresher_speed, engine_status, ecu_power, motor_power, voltage, 
+      status, extension, receive_date, sample_date)
+    values (#{id,jdbcType=BIGINT},#{batteryId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=VARCHAR}, #{temperature,jdbcType=VARCHAR}, #{oilPressure,jdbcType=VARCHAR},
-      #{engineSpeed,jdbcType=VARCHAR}, #{speed,jdbcType=VARCHAR}, #{voltage,jdbcType=VARCHAR}, 
+      #{engineSpeed,jdbcType=VARCHAR}, #{speed,jdbcType=VARCHAR},  #{drumFlowSpeed,jdbcType=VARCHAR}, 
+      #{rethresherSpeed,jdbcType=VARCHAR}, #{engineStatus,jdbcType=VARCHAR}, 
+      #{ecuPower,jdbcType=VARCHAR}, #{motorPower,jdbcType=VARCHAR},#{voltage,jdbcType=VARCHAR}, 
       #{status,jdbcType=CHAR}, #{extension,jdbcType=VARCHAR}, #{receiveDate,jdbcType=TIMESTAMP}, 
       #{sampleDate,jdbcType=TIMESTAMP})
   </insert>
@@ -66,18 +74,31 @@
       </if>
       <if test="temperature != null" >
         temperature,
-      </if>
-      <!--  
-      <if test="oil_pressure != null" >
+      </if>  
+      <if test="oilPressure != null" >
         oil_pressure,
       </if>
-      <if test="engine_speed != null" >
+      <if test="engineSpeed != null" >
         engine_speed,
       </if>
       <if test="speed != null" >
         speed,
       </if>
-      -->
+       <if test="drumFlowSpeed != null" >
+        drum_flow_speed,
+      </if>
+       <if test="rethresherSpeed != null" >
+        rethresher_speed,
+      </if>
+      <if test="engineStatus != null" >
+        engine_status,
+      </if>
+      <if test="ecuPower != null" >
+        ecu_power,
+      </if>
+      <if test="motorPower != null" >
+        motor_power,
+      </if>
       <if test="voltage != null" >
         voltage,
       </if>
@@ -110,7 +131,7 @@
       <if test="temperature != null" >
         #{temperature,jdbcType=VARCHAR},
       </if>
-      <!-- 
+    
       <if test="oilPressure != null" >
         #{oilPressure,jdbcType=VARCHAR},
       </if>
@@ -120,7 +141,24 @@
       <if test="speed != null" >
        #{speed,jdbcType=VARCHAR},
       </if>
-       -->
+      
+      <if test="drumFlowSpeed != null" >
+        #{drumFlowSpeed,jdbcType=VARCHAR},
+      </if>
+      <if test="rethresherSpeed != null" >
+        #{rethresherSpeed,jdbcType=VARCHAR},
+      </if>  
+      
+       <if test="engineStatus != null" >
+        #{engineStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="ecuPower != null" >
+        #{ecuPower,jdbcType=VARCHAR},
+      </if>
+       <if test="motorPower != null" >
+        #{motorPower,jdbcType=VARCHAR},
+      </if>
+     
       <if test="voltage != null" >
         #{voltage,jdbcType=VARCHAR},
       </if>
@@ -153,17 +191,25 @@
       <if test="temperature != null" >
         temperature = #{temperature,jdbcType=VARCHAR},
       </if>
-      <!--  
-      <if test="oil_pressure != null" >
+      
+      <!--
+      <if test="oilPressure != null" >
         oil_pressure = #{oilPressure,jdbcType=VARCHAR},
       </if>
-       <if test="engine_speed != null" >
+       <if test="engineSpeed != null" >
         engine_speed = #{engineSpeed,jdbcType=VARCHAR},
       </if>
        <if test="speed != null" >
         speed = #{speed,jdbcType=VARCHAR},
       </if>
       -->
+      
+       <if test="drumFlowSpeed != null" >
+        #{drumFlowSpeed,jdbcType=VARCHAR},
+      </if>
+      <if test="rethresherSpeed != null" >
+        #{rethresherSpeed,jdbcType=VARCHAR},
+      </if>  
       <if test="voltage != null" >
         voltage = #{voltage,jdbcType=VARCHAR},
       </if>
@@ -191,6 +237,11 @@
       oil_pressure = #{oilPressure,jdbcType=VARCHAR},
       engine_speed = #{engineSpeed,jdbcType=VARCHAR},
       speed = #{speed,jdbcType=VARCHAR},
+      drum_flow_speed = #{drumFlowSpeed,jdbcType=VARCHAR},
+      rethresher_speed = #{rethresherSpeed,jdbcType=VARCHAR},
+      engine_status = #{engineStatus,jdbcType=VARCHAR},
+      ecu_power = #{ecuPower,jdbcType=VARCHAR},
+      motor_power = #{motorPower,jdbcType=VARCHAR},
       voltage = #{voltage,jdbcType=VARCHAR},
       status = #{status,jdbcType=CHAR},
       extension = #{extension,jdbcType=VARCHAR},

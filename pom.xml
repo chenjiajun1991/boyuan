@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>sam.by</groupId>
 	<artifactId>boyuan</artifactId>
-	<version>0.7.9-SNAPSHOT</version>
+	<version>1.2.7-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<build>
 		<pluginManagement>
@@ -334,5 +334,7 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.8.5</version>
 		</dependency>
+
+		
 	</dependencies>
 </project>

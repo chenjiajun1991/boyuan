@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import com.sam.yh.dao.BatteryInfoMapper;
 import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
 import com.sam.yh.dao.EngineMapper;
+import com.sam.yh.dao.FaultInfoMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.UserBatteryMapper;
 import com.sam.yh.dao.UserCodeMapper;
@@ -42,6 +44,8 @@ import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
 import com.sam.yh.model.BatteryInfoNst;
 import com.sam.yh.model.Enginer;
+import com.sam.yh.model.FaultInfo;
+import com.sam.yh.model.PubBattery;
 import com.sam.yh.model.PubBatteryInfo;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.User;
@@ -50,6 +54,7 @@ import com.sam.yh.model.UserBatteryKey;
 import com.sam.yh.model.UserCode;
 import com.sam.yh.model.UserFollow;
 import com.sam.yh.model.UserFollowKey;
+import com.sam.yh.resp.bean.BtyFollower;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserBatteryService;
 import com.sam.yh.service.UserCodeService;
@@ -102,6 +107,9 @@ public class UserServiceImpl implements UserService {
     
     @Resource
     private String commonPwd;
+    
+    @Resource
+    private FaultInfoMapper faultInfoMapper;
 
     @Override
     public User signup(String mobilePhone, String authCode, String hassPwd, String deviceInfo) throws CrudException {
@@ -274,7 +282,7 @@ public class UserServiceImpl implements UserService {
         if (userBattery == null) {
             throw new BtyFollowException("好友手机号码与电池序列号不匹配");
         }
-
+  
         List<UserFollow> userFollowBtyList = userBatteryService.fetchUserFollowBty(user.getUserId());
         if (userFollowBtyList != null && userFollowBtyList.size() >= SamConstants.MAX_FOLLOW_COUNT) {
             throw new BtyFollowException("您已达到了最大关注数量");
@@ -298,7 +306,16 @@ public class UserServiceImpl implements UserService {
 
         User shareUser = fetchUserByPhone(friendPhone);
         if (shareUser == null) {
-            throw new BtyFollowException("好友不存在");
+//            throw new BtyFollowException("好友不存在");
+        	shareUser = new User();
+        	shareUser.setUserName(friendNickName);
+        	shareUser.setUserType("0");
+        	shareUser.setSalt(owner.getSalt());
+        	shareUser.setPassword("88888888");
+        	shareUser.setMobilePhone(friendPhone);
+        	shareUser.setCreateDate(new Date());
+        	
+        	userMapper.insert(shareUser);
         }
 
         Battery battery = batteryService.fetchBtyByPubSn(btyPubSn);
@@ -319,7 +336,7 @@ public class UserServiceImpl implements UserService {
         }
         for (UserFollow userFollow : userFollowBtyList) {
             if (StringUtils.equals(userFollow.getBtyPubSn(), btyPubSn) && userFollow.getFollowStatus()) {
-                throw new BtyFollowException("您已关注了该电池");
+                throw new BtyFollowException("您已关注了改设备");
             }
         }
 
@@ -502,25 +519,44 @@ public class UserServiceImpl implements UserService {
 	            throw new BtyLockException("设备不存在");
 	        }
 	        
-	        boolean hasConn = sendLockReq(battery.getImei(), "lockone");
+//	        if(battery.getStatus().equals("2")){
+//	        	 throw new BtyLockException("设备锁车或解锁操作还未成功反馈，请等待");
+//	        }
 	        
-	        if(hasConn){
-	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
-	        	if(enginer == null){
-	        		Enginer enginer2 = new Enginer();
-		        	enginer2.setBatteryId(battery.getId());
-		        	enginer2.setLockOne(1);
-		        	enginer2.setLockOneDate(new Date());
-		        	engineMapper.insert(enginer2);
-		        	
-		        }else{
-		        	enginer.setLockOne(1);
-		        	enginer.setLockOneDate(new Date());
-		        	engineMapper.updateByBtyId(enginer);	        	
-		        }
-	          }else{
-	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
-	          }
+//	        Date now = new Date();
+//	        
+//	        if(DateUtils.addSeconds(battery.getExpiryDate(), 3).after(now)){
+//	        	 throw new BtyLockException("请不要操作太快！");
+//	        }
+	        
+//	        boolean hasConn = sendLockReq(battery.getImei(), "lockone");
+//	        
+//	        if(hasConn){
+//	        	
+//	        	battery.setStatus("2");
+//	        	battery.setExpiryDate(new Date());
+//	        	batteryMapper.updateByPrimaryKeySelective(battery);
+//	        	
+//	        	logger.info("lockone"+battery.getImei());
+//	        	
+//	        	
+//	        	
+////	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+////	        	if(enginer == null){
+////	        		Enginer enginer2 = new Enginer();
+////		        	enginer2.setBatteryId(battery.getId());
+////		        	enginer2.setLockOne(1);
+////		        	enginer2.setLockOneDate(new Date());
+//////		        	engineMapper.insert(enginer2);
+////		        	
+////		        }else{
+////		        	enginer.setLockOne(1);
+////		        	enginer.setLockOneDate(new Date());
+//////		        	engineMapper.updateByBtyId(enginer);	        	
+////		        }
+//	          }else{
+////	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+//	          }
 	}
 
 	@Override
@@ -535,25 +571,43 @@ public class UserServiceImpl implements UserService {
 	            throw new BtyLockException("设备不存在");
 	        }
 	        
-	        boolean hasConn = sendLockReq(battery.getImei(), "locktwo");
+//	        if(battery.getStatus().equals("2")){
+//	        	 throw new BtyLockException("设备锁车或解锁操作还未成功反馈，请等待");
+//	        }
 	        
-	        if(hasConn){
-	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
-	        	if(enginer == null){
-	        		Enginer enginer2 = new Enginer();
-		        	enginer2.setBatteryId(battery.getId());
-		        	enginer2.setLockTwo(1);
-		        	enginer2.setLockTwoDate(new Date());
-		        	engineMapper.insert(enginer2);
-		        	
-		        }else{
-		        	enginer.setLockTwo(1);
-		        	enginer.setLockTwoDate(new Date());
-		        	engineMapper.updateByBtyId(enginer);	        	
-		        }
-	          }else{
-	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
-	          }
+//            Date now = new Date();
+//	        
+//            if(DateUtils.addSeconds(battery.getExpiryDate(), 3).after(now)){
+//	        	 throw new BtyLockException("请不要操作太快！");
+//	        }
+//            
+//	        boolean hasConn = sendLockReq(battery.getImei(), "locktwo");
+//	        
+//	        if(hasConn){
+//	        	
+//	        	battery.setStatus("2");
+//	        	battery.setExpiryDate(new Date());
+//	        	batteryMapper.updateByPrimaryKeySelective(battery);
+//	        	
+//	        	logger.info("locktwo"+battery.getImei());
+//	        	
+//	        	
+////	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+////	        	if(enginer == null){
+////	        		Enginer enginer2 = new Enginer();
+////		        	enginer2.setBatteryId(battery.getId());
+////		        	enginer2.setLockTwo(1);
+////		        	enginer2.setLockTwoDate(new Date());
+////		        	engineMapper.insert(enginer2);
+////		        	
+////		        }else{
+////		        	enginer.setLockTwo(1);
+////		        	enginer.setLockTwoDate(new Date());
+//////		        	engineMapper.updateByBtyId(enginer);	        	
+////		        }
+//	          }else{
+////	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+//	          }
 	       
 	}
 
@@ -569,25 +623,42 @@ public class UserServiceImpl implements UserService {
 	            throw new BtyLockException("设备不存在");
 	        }
 	        
-	        boolean hasConn = sendLockReq(battery.getImei(), "unlockone");
+//	        if(battery.getStatus().equals("2")){
+//	        	 throw new BtyLockException("设备锁车或解锁操作还未成功反馈，请等待");
+//	        }
 	        
-	        if(hasConn){
-	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
-	        	if(enginer == null){
-	        		Enginer enginer2 = new Enginer();
-		        	enginer2.setBatteryId(battery.getId());
-		        	enginer2.setLockOne(0);
-		        	enginer2.setLockOneDate(new Date());
-		        	engineMapper.insert(enginer2);
-		        	
-		        }else{
-		        	enginer.setLockOne(0);
-		        	enginer.setLockOneDate(new Date());
-		        	engineMapper.updateByBtyId(enginer);	        	
-		        }
-	          }else{
-	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
-	          }
+//            Date now = new Date();
+//	        
+//	        if(DateUtils.addSeconds(battery.getExpiryDate(), 3).after(now)){
+//	        	 throw new BtyLockException("请不要操作太快！");
+//	        }
+	        
+//	        boolean hasConn = sendLockReq(battery.getImei(), "unlockone");
+//	        
+//	        if(hasConn){
+//	        	
+//	        	battery.setStatus("2");
+//	        	battery.setExpiryDate(new Date());
+//	        	batteryMapper.updateByPrimaryKeySelective(battery);
+//	        	
+//	        	logger.info("unlockone"+battery.getImei());
+//	        	
+////	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+////	        	if(enginer == null){
+////	        		Enginer enginer2 = new Enginer();
+////		        	enginer2.setBatteryId(battery.getId());
+////		        	enginer2.setLockOne(0);
+////		        	enginer2.setLockOneDate(new Date());
+//////		        	engineMapper.insert(enginer2);
+////		        	
+////		        }else{
+////		        	enginer.setLockOne(0);
+////		        	enginer.setLockOneDate(new Date());
+//////		        	engineMapper.updateByBtyId(enginer);	        	
+////		        }
+//	          }else{
+////	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+//	          }
 	       
 	}
 
@@ -602,26 +673,42 @@ public class UserServiceImpl implements UserService {
 	        if (battery == null) {
 	            throw new BtyLockException("设备不存在");
 	        }
+//	        if(battery.getStatus().equals("2")){
+//	        	 throw new BtyLockException("设备锁车或解锁操作还未成功反馈，请等待");
+//	        }
+//	        
+//            Date now = new Date();
+//	        
+//	        if(DateUtils.addSeconds(battery.getExpiryDate(), 3).after(now)){
+//	        	 throw new BtyLockException("请不要操作太快！");
+//	        }
 	        
-	        boolean hasConn = sendLockReq(battery.getImei(), "unlocktwo");
-	        
-	        if(hasConn){
-	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
-	        	if(enginer == null){
-	        		Enginer enginer2 = new Enginer();
-		        	enginer2.setBatteryId(battery.getId());
-		        	enginer2.setLockTwo(0);
-		        	enginer2.setLockTwoDate(new Date());
-		        	engineMapper.insert(enginer2);
-		        	
-		        }else{
-		        	enginer.setLockTwo(0);
-		        	enginer.setLockTwoDate(new Date());
-		        	engineMapper.updateByBtyId(enginer);	        	
-		        }
-	          }else{
-	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
-	          }
+//	        boolean hasConn = sendLockReq(battery.getImei(), "unlocktwo");
+//	        
+//	        if(hasConn){
+//	        	
+//	        	battery.setStatus("2");
+//	        	battery.setExpiryDate(new Date());
+//	        	batteryMapper.updateByPrimaryKeySelective(battery);
+//	        	
+//	        	logger.info("unlocktwo"+battery.getImei());
+////	        	
+////	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+////	        	if(enginer == null){
+////	        		Enginer enginer2 = new Enginer();
+////		        	enginer2.setBatteryId(battery.getId());
+////		        	enginer2.setLockTwo(0);
+////		        	enginer2.setLockTwoDate(new Date());
+//////		        	engineMapper.insert(enginer2);
+////		        	
+////		        }else{
+////		        	enginer.setLockTwo(0);
+////		        	enginer.setLockTwoDate(new Date());
+//////		        	engineMapper.updateByBtyId(enginer);	        	
+////		        }
+//	          }else{
+////	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+//	          }
 
 	}
 	
@@ -644,6 +731,170 @@ public class UserServiceImpl implements UserService {
 			logger.error("未获取到长连接, " + btyImei);
 		}
 		return hasConn;
+	}
+	
+	private boolean sendWriteMessage(String btyImei,String message) {
+		Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+		if (battery == null) {
+			logger.error("电池不存在, " + btyImei);
+			return false;
+		}
+		boolean hasConn = false;
+
+		ConcurrentHashMap<String, Channel> channelMap = SamBtyDataHandler.channelMap;
+		Channel channel = channelMap.get(battery.getImei());
+		if (channel != null) {
+			channel.writeAndFlush(message+"\n");
+			hasConn = true;
+					
+			logger.info("writemessage"+battery.getImei()+":"+message);
+		}
+
+		if (!hasConn) {
+			logger.error("未获取到长连接, " + btyImei);
+		}
+		return hasConn;
+	}
+
+	@Override
+	public List<FaultInfo> fetchFault(String btyImei , String flag) throws CrudException {
+		// TODO Auto-generated method stub
+		if(btyImei == null){
+			throw new BtyLockException("imei号不能为空");
+		}
+		
+		Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+		if(battery == null){
+			throw new BtyLockException("不存在的设备");
+		}
+		List<FaultInfo> faults = new ArrayList<FaultInfo>();
+		
+		List<FaultInfo> faultInfos = faultInfoMapper.selectByBtyId(battery.getId());
+		
+		if(faultInfos == null || faultInfos.size() == 0){
+			return null;
+		}else{
+			if(flag.equals("0")){
+				for(FaultInfo faultInfo : faultInfos){
+					if(faultInfo.getIsNewest() == 1){
+						faults.add(faultInfo);
+					}
+				}
+			}else{
+				faults = faultInfos;
+			}
+			
+		}
+		
+		
+		
+		return faults;
+	}
+
+	@Override
+	public void lockBind(String mobilePhone, String btyImei)
+			throws CrudException {
+		
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+//	        if(battery.getStatus().equals("2")){
+//	        	 throw new BtyLockException("设备锁车或解锁操作还未成功反馈，请等待");
+//	        }
+	        
+//            Date now = new Date();
+//	        
+//	        if(DateUtils.addSeconds(now, 3).before(battery.getExpiryDate())){
+//	        	 throw new BtyLockException("请不要操作太快！");
+//	        }
+	        
+	        boolean hasConn = sendLockReq(battery.getImei(), "lockbind");
+	        
+	        if(hasConn){
+	        	
+//	        	battery.setStatus("2");
+//	        	battery.setExpiryDate(new Date());
+//	        	batteryMapper.updateByPrimaryKeySelective(battery);
+//	        	
+//	        	logger.info("lockbind"+battery.getImei());
+	        	
+//	        	Enginer enginer = engineMapper.selectByBtyId(battery.getId());
+//	        	if(enginer == null){
+//	        		Enginer enginer2 = new Enginer();
+//		        	enginer2.setBatteryId(battery.getId());
+//		        	enginer2.setLockBind("1");
+//		        	enginer2.setLockBindDate(new Date());
+////		        	engineMapper.insert(enginer2);
+//		        	
+//		        }else{
+//		        	enginer.setLockBind("1");
+//		        	enginer.setLockBindDate(new Date());
+////		        	engineMapper.updateByBtyId(enginer);	        	
+//		        }
+	          }else{
+//	        	  throw new BtyLockException("当前设备没有与服务器建立连接！");
+	          }
+
+	}
+
+	@Override
+	public void writeMessage(String mobilePhone, String btyImei , String message)
+			throws CrudException {
+		// TODO Auto-generated method stub
+		 User owner = fetchUserByPhone(mobilePhone);
+	        if (owner == null) {
+	            throw new BtyLockException("用户不存在");
+	        }
+	        Battery battery = batteryService.fetchBtyByIMEI(btyImei);
+	        if (battery == null) {
+	            throw new BtyLockException("设备不存在");
+	        }
+	        
+	        
+	        
+	        sendWriteMessage(battery.getImei(), message);
+	}
+
+	@Override
+	public void sendSosMessage(String mobilePhone) throws CrudException {
+		
+		User user = userMapper.selectByPhone(mobilePhone);
+		
+		if(user == null){
+			throw new CrudException("用户不存在");
+		}
+		
+		List<PubBattery> pubBatterys = userBatteryMapper.selectBtysByUserId(user.getUserId());
+		
+		if(pubBatterys == null){
+			throw new CrudException("该用户下没有设备");
+		}
+		
+		for(PubBattery pubBattery: pubBatterys){
+			
+			Battery battery = batteryMapper.selectByIMEI(pubBattery.getBytImei());
+			
+			List<BtyFollower> btyFollowers = userFollowMapper.selectBtyFollowers(battery.getId());
+			
+			if(btyFollowers != null){
+				for(BtyFollower btyFollower : btyFollowers){
+					
+					userCodeService.sendSosMsg(btyFollower.getFollowerPhone());
+					
+				}
+			}
+			
+			
+			
+		}
+		
+		
 	}
 	
 }

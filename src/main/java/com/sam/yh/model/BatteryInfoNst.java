@@ -19,6 +19,16 @@ public class BatteryInfoNst {
     
     private String speed;
     
+    private String drumFlowSpeed;
+    
+    private String rethresherSpeed;
+    
+    private String engineStatus;
+    
+    private String ecuPower;
+    
+    private String motorPower;
+    
     private String voltage;
 
     private String status;
@@ -93,6 +103,48 @@ public class BatteryInfoNst {
 
 	public void setSpeed(String speed) {
 		this.speed = speed;
+	}
+	
+	
+
+	public String getDrumFlowSpeed() {
+		return drumFlowSpeed;
+	}
+
+	public void setDrumFlowSpeed(String drumFlowSpeed) {
+		this.drumFlowSpeed = drumFlowSpeed;
+	}
+
+	public String getRethresherSpeed() {
+		return rethresherSpeed;
+	}
+
+	public void setRethresherSpeed(String rethresherSpeed) {
+		this.rethresherSpeed = rethresherSpeed;
+	}
+
+	public String getEngineStatus() {
+		return engineStatus;
+	}
+
+	public void setEngineStatus(String engineStatus) {
+		this.engineStatus = engineStatus;
+	}
+
+	public String getEcuPower() {
+		return ecuPower;
+	}
+
+	public void setEcuPower(String ecuPower) {
+		this.ecuPower = ecuPower;
+	}
+
+	public String getMotorPower() {
+		return motorPower;
+	}
+
+	public void setMotorPower(String motorPower) {
+		this.motorPower = motorPower;
 	}
 
 	public String getVoltage() {

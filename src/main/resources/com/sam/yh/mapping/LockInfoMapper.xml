@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sam.yh.dao.LockInfoMapper" >
+<resultMap id="BaseResultMap" type="com.sam.yh.model.LockInfo" >
+    <id column="battery_id" property="batteryId" jdbcType="INTEGER" />
+    <result column="lock_state" property="lockState" jdbcType="INTEGER" />
+    <result column="unlock_state" property="unlockState" jdbcType="INTEGER" /> 
+    <result column="bind_state" property="bindState" jdbcType="INTEGER" />
+    <result column="lock_req_date" property="lockReqDate" jdbcType="TIMESTAMP" />
+    <result column="lock_resp_date" property="lockRespDate" jdbcType="TIMESTAMP" />
+    <result column="unlock_req_date" property="unlockReqDate" jdbcType="TIMESTAMP" />
+    <result column="unlock_resp_date" property="unlockRespDate" jdbcType="TIMESTAMP" />
+    <result column="bind_req_date" property="bindReqDate" jdbcType="TIMESTAMP" />
+    <result column="bind_resp_date" property="bindRespDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+   <sql id="Base_Column_List" >
+    battery_id, lock_state, unlock_state, bind_state, lock_req_date, lock_resp_date, unlock_req_date, unlock_resp_date, bind_req_date, bind_resp_date
+  </sql>
+  
+  
+  <select id="selectByBtyId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from lock_info
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </select>
+   
+  
+  <delete id="deleteBtyById" parameterType="java.lang.Integer" >
+    delete from lock_info
+    where battery_id = #{batteryId,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.sam.yh.model.LockInfo">
+    insert into lock_info (battery_id, lock_state, unlock_state, bind_state, lock_req_date, lock_resp_date, unlock_req_date, unlock_resp_date, bind_req_date, bind_resp_date)
+      values ( #{batteryId,jdbcType=INTEGER}, #{lockState,jdbcType=INTEGER}, #{unlockState,jdbcType=INTEGER}, #{bindState,jdbcType=INTEGER},
+      #{lockReqDate,jdbcType=TIMESTAMP}, #{lockRespDate,jdbcType=TIMESTAMP}, #{unlockReqDate,jdbcType=TIMESTAMP},#{unlockRespDate,jdbcType=TIMESTAMP},
+      #{bindReqDate,jdbcType=TIMESTAMP}, #{bindRespDate,jdbcType=TIMESTAMP})
+  </insert>
+
+
+   <update id="updateByBtyId" parameterType="com.sam.yh.model.LockInfo">
+    update lock_info
+    set lock_state = #{lockState,jdbcType=INTEGER},
+      unlock_state = #{unlockState,jdbcType=INTEGER},
+      bind_state =  #{bindState,jdbcType=INTEGER},
+      lock_req_date = #{lockReqDate,jdbcType=TIMESTAMP},
+      lock_resp_date = #{lockRespDate,jdbcType=TIMESTAMP},
+      unlock_req_date = #{unlockReqDate,jdbcType=TIMESTAMP},
+      unlock_resp_date = #{unlockRespDate,jdbcType=TIMESTAMP},
+      bind_req_date = #{bindReqDate,jdbcType=TIMESTAMP}
+      bind_resp_date = #{unlockReqDate,jdbcType=TIMESTAMP}
+    where battery_id = #{bindRespDate,jdbcType=INTEGER}
+  </update>
+
+</mapper>

@@ -16,7 +16,11 @@ import com.sam.yh.common.PwdUtils;
 import com.sam.yh.crud.exception.CrudException;
 import com.sam.yh.crud.exception.UserSignupException;
 import com.sam.yh.dao.BatteryInfoMapper;
+import com.sam.yh.dao.BatteryInfoNstMapper;
 import com.sam.yh.dao.BatteryMapper;
+import com.sam.yh.dao.EquipmentStateNstMapper;
+import com.sam.yh.dao.FaultInfoMapper;
+import com.sam.yh.dao.FaultInfoNstMapper;
 import com.sam.yh.dao.ResellerMapper;
 import com.sam.yh.dao.TroubleBatteryMapper;
 import com.sam.yh.dao.TroubleUserBatteryMapper;
@@ -25,6 +29,10 @@ import com.sam.yh.dao.UserCodeMapper;
 import com.sam.yh.dao.UserMapper;
 import com.sam.yh.model.Battery;
 import com.sam.yh.model.BatteryInfo;
+import com.sam.yh.model.BatteryInfoNst;
+import com.sam.yh.model.EquipmentState;
+import com.sam.yh.model.FaultInfo;
+import com.sam.yh.model.FaultInfoNst;
 import com.sam.yh.model.Reseller;
 import com.sam.yh.model.TroubleBattery;
 import com.sam.yh.model.TroubleUserBattery;
@@ -36,6 +44,8 @@ import com.sam.yh.model.web.BtyCountInfo;
 import com.sam.yh.model.web.BtySaleInfoModel;
 import com.sam.yh.model.web.CodeInfoModel;
 import com.sam.yh.model.web.TroubleBtyInfo;
+import com.sam.yh.resp.bean.web.FetchAllMachineFault;
+import com.sam.yh.resp.bean.web.FetchSingleFaultInfos;
 import com.sam.yh.service.BatteryService;
 import com.sam.yh.service.UserService;
 import com.sam.yh.service.WebService;
@@ -76,6 +86,18 @@ public class WebServiceImpl implements WebService{
     
     @Resource
     private ResellerMapper resellerMapper;
+    
+    @Resource
+    private FaultInfoNstMapper faultInfoNstMapper;
+    
+    @Resource
+    private FaultInfoMapper faultInfoMapper;
+    
+    @Resource
+    private EquipmentStateNstMapper equipmentStateNstMapper;
+    
+    @Resource
+    private BatteryInfoNstMapper batteryInfoNstMapper;
 
 	@Override
 	public User adminLogin(String account, String hassPwd)
@@ -173,6 +195,16 @@ public class WebServiceImpl implements WebService{
 				batteryLocInfo.setTemperature(batteryInfos.get(i).getTemperature());
 				batteryLocInfo.setVoltage(batteryInfos.get(i).getVoltage());
 				batteryLocInfo.setStatus(batteryInfos.get(i).getStatus());
+				
+				batteryLocInfo.setEngineSpeed(batteryInfos.get(i).getEngineSpeed());
+				batteryLocInfo.setEngineStatus(batteryInfos.get(i).getEngineStatus());
+				batteryLocInfo.setOilPressure(batteryInfos.get(i).getOilPressure());
+				batteryLocInfo.setSpeed(batteryInfos.get(i).getSpeed());
+				batteryLocInfo.setMotorPower(batteryInfos.get(i).getMotorPower());
+				
+				batteryLocInfo.setDrumFlowSpeed(batteryInfos.get(i).getDrumFlowSpeed());
+				batteryLocInfo.setRethresherSpeed(batteryInfos.get(i).getRethresherSpeed());
+				
                 String dateString = formatter.format(batteryInfos.get(i).getReceiveDate());
                 batteryLocInfo.setReceiveDate(dateString);
                 batteryLocInfos.add(batteryLocInfo);
@@ -190,6 +222,16 @@ public class WebServiceImpl implements WebService{
 				batteryLocInfo.setTemperature(batteryInfos.get(i).getTemperature());
 				batteryLocInfo.setVoltage(batteryInfos.get(i).getVoltage());
 				batteryLocInfo.setStatus(batteryInfos.get(i).getStatus());
+				
+				batteryLocInfo.setEngineSpeed(batteryInfos.get(i).getEngineSpeed());
+				batteryLocInfo.setEngineStatus(batteryInfos.get(i).getEngineStatus());
+				batteryLocInfo.setOilPressure(batteryInfos.get(i).getOilPressure());
+				batteryLocInfo.setSpeed(batteryInfos.get(i).getSpeed());
+				batteryLocInfo.setMotorPower(batteryInfos.get(i).getMotorPower());
+				
+				batteryLocInfo.setDrumFlowSpeed(batteryInfos.get(i).getDrumFlowSpeed());
+				batteryLocInfo.setRethresherSpeed(batteryInfos.get(i).getRethresherSpeed());
+				
                 String dateString = formatter.format(batteryInfos.get(i).getReceiveDate());
                 batteryLocInfo.setReceiveDate(dateString);
                 batteryLocInfos.add(batteryLocInfo);
@@ -573,5 +615,123 @@ public class WebServiceImpl implements WebService{
 			batteryMapper.updateByPrimaryKey(battery);	
 		}
 	}
+
+	@Override
+	public List<FetchAllMachineFault> fetchAllMachineFault(String userPhone ,int flag)
+			throws CrudException {
+		
+		User user = userMapper.selectByPhone(userPhone);
+		if(user == null){
+			throw new CrudException("用户不存在！");
+		}
+		
+		List<FaultInfoNst> faultInfoNsts = faultInfoNstMapper.selectAllFaultInfo();
+		
+		List<FetchAllMachineFault> fetchAllMachineFaults = new ArrayList<FetchAllMachineFault>();
+		
+		if(faultInfoNsts != null && faultInfoNsts.size() > 0){
+			
+			for(FaultInfoNst faultInfoNst : faultInfoNsts ){
+				
+				if(faultInfoNst.getIsFault() == flag){
+					
+					Battery battery = batteryMapper.selectByPrimaryKey(faultInfoNst.getBatteryId());
+					
+					FetchAllMachineFault fetchAllMachineFault = new FetchAllMachineFault();
+					
+					fetchAllMachineFault.setBatteryId(battery.getId());
+					fetchAllMachineFault.setImei(battery.getImei());
+					fetchAllMachineFault.setSimNo(battery.getSimNo());
+					fetchAllMachineFault.setSn(battery.getSn());
+					fetchAllMachineFault.setMarkType(faultInfoNst.getMarkType());
+					fetchAllMachineFault.setIsFault(faultInfoNst.getIsFault());
+					fetchAllMachineFault.setByte1(faultInfoNst.getByte1());
+					fetchAllMachineFault.setByte2(faultInfoNst.getByte2());
+					fetchAllMachineFault.setByte3(faultInfoNst.getByte3());
+					SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			        String dateString = formatter.format(faultInfoNst.getReceiveDate());
+			        
+					fetchAllMachineFault.setReceiveDate(dateString);
+					
+					fetchAllMachineFaults.add(fetchAllMachineFault);
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		return fetchAllMachineFaults;
+	}
+
+	@Override
+	public List<FetchSingleFaultInfos> fetchSingleFaultInfos(String imei) throws CrudException{
+		
+        Battery battery = batteryMapper.selectByIMEI(imei);
+        
+        if(battery == null){
+        	throw new CrudException("农机不存在!");
+        }
+        List<FetchSingleFaultInfos> faultInfos = new ArrayList<FetchSingleFaultInfos>();
+        
+        FaultInfoNst newest = faultInfoNstMapper.selectByBtyId(battery.getId());
+        
+        if(newest != null){
+        	List<FaultInfo> infos = faultInfoMapper.selectByMarkType(newest.getMarkType());
+        	
+        	if(infos != null && infos.size() > 0){
+        		for(FaultInfo info : infos){
+        			
+        			FetchSingleFaultInfos faultInfo = new FetchSingleFaultInfos();
+        			faultInfo.setBatteryId(battery.getId());
+        			faultInfo.setCodeType(info.getCodeType());
+        			faultInfo.setFaultMessage(info.getFaultMessage());
+        			
+        			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			        String dateString = formatter.format(info.getReceiveDate());
+			        
+        			faultInfo.setReceiveDate(dateString);
+        			
+        			faultInfos.add(faultInfo);
+        			
+        			
+        		}
+        	}
+        }
+        
+		return faultInfos;
+	}
+
+	@Override
+	public EquipmentState fetchEquipmentStates(String imei)
+			throws CrudException {
+		
+		  Battery battery = batteryMapper.selectByIMEI(imei);
+	        
+	        if(battery == null){
+	        	throw new CrudException("农机不存在!");
+	        }
+	        
+	        EquipmentState equipmentState = equipmentStateNstMapper.selectByBtyId(battery.getId());
+	        
+	       
+	        
+		return equipmentState;
+	}
+
+	@Override
+	public BatteryInfoNst fetchBatteryInfoNst(String imei) throws CrudException {
+		
+		 Battery battery = batteryMapper.selectByIMEI(imei);
+	        
+	        if(battery == null){
+	        	throw new CrudException("农机不存在!");
+	        }
+	        
+	        BatteryInfoNst batteryInfoNst =  batteryInfoNstMapper.selectByBtyId(battery.getId());
+		return batteryInfoNst;
+	}
+	
 
 }
